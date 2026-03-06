@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NomadAlgo — Algorithmic Trading EA | XBO &amp; DGB</title>
+<meta name="description" content="NomadAlgo — Expert Advisor XBO และ DGB สำหรับ Forex Trading บน MH Markets รันฟรีผ่าน IB หรือ Copy Trade 20% Profit Share"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --red:#E8001D;--red-dim:#9c0013;--red-glow:rgba(232,0,29,0.18);
+  --cream:#F5F0E8;--cream-dim:#b8b2a6;
+  --black:#0A0A0A;--black-2:#111111;--black-3:#181818;--black-4:#222222;
+  --border:rgba(245,240,232,0.07);--border-red:rgba(232,0,29,0.35);
+  --green:#22c55e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--cream);font-family:'Sarabun',sans-serif;font-weight:300;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--red)}
+
+/* ─── RISK POPUP ────────────────────────── */
+#riskOverlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.92);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.risk-modal{
+  background:var(--black-3);border:1px solid var(--border-red);
+  max-width:560px;width:100%;padding:40px;position:relative;
+}
+.risk-modal-tag{
+  display:inline-block;padding:4px 12px;background:var(--red);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  font-family:'DM Mono',monospace;color:#fff;margin-bottom:20px;
+}
+.risk-modal h2{
+  font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;
+  margin-bottom:16px;line-height:1.1;
+}
+.risk-modal p{font-size:12px;line-height:1.8;color:var(--cream-dim);margin-bottom:10px}
+.risk-modal p strong{color:var(--cream);font-weight:500}
+.risk-modal-actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.risk-accept{
+  flex:1;padding:13px;background:var(--red);border:none;
+  color:#fff;font-family:'Sarabun',sans-serif;font-size:12px;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  transition:background .2s;min-width:160px;
+}
+.risk-accept:hover{background:var(--red-dim)}
+.risk-decline{
+  flex:1;padding:13px;background:none;border:1px solid var(--border);
+  color:var(--cream-dim);font-family:'Sarabun',sans-serif;font-size:12px;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;min-width:160px;
+}
+.risk-decline:hover{border-color:var(--cream-dim)}
+
+/* ─── COOKIE BANNER (PDPA) ──────────────── */
+#cookieBanner{
+  position:fixed;bottom:0;left:0;right:0;z-index:999;
+  background:var(--black-4);border-top:1px solid var(--border);
+  padding:16px 32px;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+  transform:translateY(100%);transition:transform .4s ease;
+}
+#cookieBanner.show{transform:translateY(0)}
+.cookie-text{font-size:12px;color:var(--cream-dim);line-height:1.6;flex:1;min-width:240px}
+.cookie-text a{color:var(--red);text-decoration:none}
+.cookie-actions{display:flex;gap:10px;flex-shrink:0}
+.cookie-accept{
+  padding:8px 20px;background:var(--red);border:none;color:#fff;
+  font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;font-family:'Sarabun',sans-serif;
+}
+.cookie-decline{
+  padding:8px 20px;background:none;border:1px solid var(--border);
+  color:var(--cream-dim);font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;font-family:'Sarabun',sans-serif;
+}
+
+/* ─── LINE FLOAT BUTTON ─────────────────── */
+#lineFloat{
+  position:fixed;bottom:28px;right:28px;z-index:998;
+  width:56px;height:56px;border-radius:50%;
+  background:#06C755;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(6,199,85,0.4);
+  transition:transform .2s,box-shadow .2s;
+}
+#lineFloat:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(6,199,85,0.6)}
+#lineFloat svg{width:30px;height:30px;fill:#fff}
+.line-tooltip{
+  position:absolute;right:68px;top:50%;transform:translateY(-50%);
+  background:var(--black-3);border:1px solid var(--border);
+  padding:6px 12px;font-size:11px;letter-spacing:1px;white-space:nowrap;
+  color:var(--cream-dim);opacity:0;transition:opacity .2s;pointer-events:none;
+}
+#lineFloat:hover .line-tooltip{opacity:1}
+
+/* ─── NAV ───────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:64px;
+  background:rgba(10,10,10,0.88);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--cream);text-decoration:none}
+.nav-logo span{color:var(--red)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-dim);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--cream)}
+.lang-toggle{display:flex;background:var(--black-4);border-radius:20px;border:1px solid var(--border);overflow:hidden}
+.lang-btn{padding:5px 13px;font-size:10px;letter-spacing:1px;text-transform:uppercase;background:none;border:none;color:var(--cream-dim);cursor:pointer;transition:all .2s;font-family:'Sarabun',sans-serif}
+.lang-btn.active{background:var(--red);color:#fff}
+.nav-cta{padding:8px 20px;background:var(--red);border:none;border-radius:1px;color:#fff;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Sarabun',sans-serif;font-weight:500;transition:background .2s;text-decoration:none;display:inline-block}
+.nav-cta:hover{background:var(--red-dim)}
+
+/* ─── HERO ──────────────────────────────── */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:120px 48px 80px;overflow:hidden}
+.hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(245,240,232,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,240,232,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent);
+}
+.hero-accent{position:absolute;right:-100px;top:50%;transform:translateY(-50%);width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(232,0,29,0.1) 0%,transparent 70%);pointer-events:none}
+.hero-ticker{position:absolute;bottom:32px;left:0;right:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden}
+.ticker-track{display:flex;gap:60px;white-space:nowrap;animation:ticker 28s linear infinite}
+.ticker-item{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--cream-dim)}
+.ticker-item .up{color:var(--green)}.ticker-item .dn{color:var(--red)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.hero-content{position:relative;z-index:2;max-width:720px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border-red);border-radius:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:28px}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,8.5vw,114px);line-height:.91;letter-spacing:2px;margin-bottom:8px}
+.hero-title .line-red{color:var(--red)}
+.hero-sub{font-size:14px;line-height:1.75;color:var(--cream-dim);max-width:480px;margin:22px 0 36px;font-weight:300}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{padding:14px 34px;background:var(--red);border:none;border-radius:1px;color:#fff;font-family:'Sarabun',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--red-dim);transform:translateY(-1px)}
+.btn-outline{padding:14px 34px;background:none;border:1px solid var(--border);border-radius:1px;color:var(--cream-dim);font-family:'Sarabun',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+.btn-outline:hover{border-color:var(--cream-dim);color:var(--cream)}
+.hero-stats{display:flex;gap:48px;margin-top:52px;padding-top:28px;border-top:1px solid var(--border)}
+.hero-stat-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px}
+.hero-stat-num span{color:var(--red)}
+.hero-stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-top:2px;font-family:'DM Mono',monospace}
+
+/* ─── SECTIONS ──────────────────────────── */
+section{padding:96px 48px}
+.section-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:14px;font-family:'DM Mono',monospace}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5vw,62px);letter-spacing:2px;line-height:1;margin-bottom:14px}
+.section-desc{font-size:13px;line-height:1.8;color:var(--cream-dim);max-width:500px}
+.divider{width:36px;height:2px;background:var(--red);margin:18px 0}
+
+/* ─── PERFORMANCE ───────────────────────── */
+#performance{background:var(--black-2)}
+.perf-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:20px}
+.perf-tabs{display:flex;border:1px solid var(--border);overflow:hidden}
+.perf-tab{padding:8px 22px;background:none;border:none;border-right:1px solid var(--border);color:var(--cream-dim);font-family:'Sarabun',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.perf-tab:last-child{border-right:none}
+.perf-tab.active{background:var(--red);color:#fff}
+.perf-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:2px}
+.perf-card{background:var(--black-3);padding:28px 32px;border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s}
+.perf-card:hover{border-color:var(--border-red)}
+.perf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.perf-card:hover::before{transform:scaleX(1)}
+.perf-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);font-family:'DM Mono',monospace;margin-bottom:8px}
+.perf-card-val{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:1px;line-height:1}
+.perf-card-val.green{color:var(--green)}.perf-card-val.red-v{color:var(--red)}.perf-card-val.white{color:var(--cream)}
+.perf-card-sub{font-size:11px;color:var(--cream-dim);margin-top:4px}
+
+/* Myfxbook iframe wrapper */
+.myfx-wrap{
+  background:var(--black-3);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.myfx-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+}
+.myfx-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream-dim);text-transform:uppercase}
+.myfx-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px}
+.myfx-live::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+.myfx-link{font-size:10px;letter-spacing:1px;color:var(--red);text-decoration:none;font-family:'DM Mono',monospace;border-bottom:1px solid var(--border-red);padding-bottom:1px;transition:opacity .2s}
+.myfx-link:hover{opacity:.7}
+.myfx-iframe-box{padding:0}
+.myfx-iframe-box iframe{width:100%;height:420px;border:none;display:block;background:var(--black-3)}
+
+/* ─── HOW IT WORKS ──────────────────────── */
+#how{background:var(--black)}
+.steps-layout{display:grid;grid-template-columns:1fr 2fr;gap:72px;align-items:start;margin-top:48px}
+.steps-list{display:flex;flex-direction:column}
+.step-item{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .2s}
+.step-item.active .step-num{background:var(--red);color:#fff;border-color:var(--red)}
+.step-item.active .step-title{color:var(--cream)}
+.step-num{flex-shrink:0;width:38px;height:38px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;color:var(--cream-dim);transition:all .3s}
+.step-title{font-size:14px;font-weight:500;color:var(--cream-dim);margin-bottom:5px;transition:color .2s}
+.step-desc{font-size:12px;line-height:1.7;color:var(--cream-dim)}
+.step-visual{background:var(--black-3);border:1px solid var(--border);padding:40px;min-height:340px;display:flex;align-items:center;justify-content:center;position:relative}
+.step-visual-inner{text-align:center}
+.step-icon-big{font-size:60px;margin-bottom:14px;display:block}
+.step-visual-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:8px}
+.step-visual-desc{font-size:13px;color:var(--cream-dim);line-height:1.7;max-width:260px;margin:0 auto}
+
+/* ─── PRODUCTS ──────────────────────────── */
+#products{background:var(--black-2)}
+.products-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px}
+.product-card{background:var(--black-3);padding:44px;border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s}
+.product-card:hover{border-color:var(--border-red)}
+.product-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s}
+.product-card:hover::after{opacity:1}
+.product-tag{display:inline-block;padding:3px 10px;background:var(--red);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:20px;font-family:'DM Mono',monospace}
+.product-name{font-family:'Bebas Neue',sans-serif;font-size:68px;letter-spacing:4px;line-height:1;margin-bottom:8px}
+.product-tagline{font-size:13px;color:var(--cream-dim);margin-bottom:28px;line-height:1.65}
+.product-stats-row{display:flex;gap:28px;margin-bottom:28px}
+.product-stat-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--cream)}
+.product-stat-val.green{color:var(--green)}.product-stat-val.red-c{color:var(--red)}
+.product-stat-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream-dim);margin-top:2px}
+.product-features{display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.product-feature{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--cream-dim)}
+.product-feature::before{content:'▸';color:var(--red);font-size:9px}
+.product-cta{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cream);text-decoration:none;border-bottom:1px solid var(--border-red);padding-bottom:2px;transition:border-color .2s}
+.product-cta:hover{border-color:var(--red);color:var(--red)}
+
+/* ─── PRICING ───────────────────────────── */
+#pricing{background:var(--black)}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.pricing-card{background:var(--black-3);border:1px solid var(--border);padding:36px;position:relative}
+.pricing-card.featured{border-color:var(--red);background:var(--black-4)}
+.pricing-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;right:28px;padding:4px 14px;background:var(--red);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fff}
+.pricing-icon{font-size:30px;margin-bottom:18px;display:block}
+.pricing-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;margin-bottom:6px}
+.pricing-price{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;color:var(--cream);margin-bottom:4px}
+.pricing-price span{font-size:18px;color:var(--cream-dim)}
+.pricing-price-sub{font-size:11px;color:var(--cream-dim);letter-spacing:1px;margin-bottom:24px}
+.pricing-features-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.pf-item{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5}
+.pf-check{color:var(--green);flex-shrink:0;font-size:13px;margin-top:1px}
+.pf-cross{color:#444;flex-shrink:0;font-size:13px;margin-top:1px}
+.pricing-btn{width:100%;padding:13px;background:none;border:1px solid var(--border);color:var(--cream);font-family:'Sarabun',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;display:block;text-align:center}
+.pricing-btn:hover{border-color:var(--cream-dim)}
+.pricing-card.featured .pricing-btn{background:var(--red);border-color:var(--red);color:#fff}
+.pricing-card.featured .pricing-btn:hover{background:var(--red-dim)}
+.compare-table{width:100%;border-collapse:collapse;margin-top:40px;background:var(--black-3);border:1px solid var(--border)}
+.compare-table th{padding:14px 22px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-weight:400;background:var(--black-4)}
+.compare-table th:not(:first-child){text-align:center}
+.compare-table td{padding:12px 22px;font-size:12px;border-bottom:1px solid var(--border);color:var(--cream-dim)}
+.compare-table td:not(:first-child){text-align:center}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:hover td{background:rgba(245,240,232,0.015)}
+.ck-yes{color:var(--green);font-size:15px}.ck-no{color:#333;font-size:15px}.ck-info{color:var(--red);font-size:11px;font-family:'DM Mono',monospace}
+
+/* ─── FAQ ───────────────────────────────── */
+#faq{background:var(--black-2)}
+.faq-layout{display:grid;grid-template-columns:1fr 2fr;gap:72px;align-items:start;margin-top:48px}
+.faq-item{border-bottom:1px solid var(--border);overflow:hidden}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:18px 0;cursor:pointer;gap:14px}
+.faq-q-text{font-size:13px;font-weight:400;line-height:1.5;color:var(--cream-dim);transition:color .2s}
+.faq-q:hover .faq-q-text{color:var(--cream)}
+.faq-icon{flex-shrink:0;width:22px;height:22px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--cream-dim);transition:all .3s}
+.faq-item.open .faq-icon{background:var(--red);border-color:var(--red);color:#fff;transform:rotate(45deg)}
+.faq-a{font-size:12px;line-height:1.85;color:var(--cream-dim);max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:18px}
+.contact-box{background:var(--black-3);border:1px solid var(--border);padding:36px}
+.contact-box-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;margin-bottom:10px}
+.contact-box-desc{font-size:12px;color:var(--cream-dim);line-height:1.7;margin-bottom:24px}
+.contact-links{display:flex;flex-direction:column;gap:10px}
+.contact-link{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--black-4);border:1px solid var(--border);font-size:12px;color:var(--cream-dim);text-decoration:none;transition:all .2s}
+.contact-link:hover{border-color:var(--border-red);color:var(--cream)}
+.contact-link-icon{font-size:16px}
+
+/* ─── DISCLAIMER SECTION ────────────────── */
+#disclaimer{background:var(--black);border-top:1px solid var(--border)}
+.disclaimer-box{background:var(--black-3);border:1px solid var(--border-red);padding:40px;max-width:900px;margin:0 auto}
+.disclaimer-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.disclaimer-body{font-size:11.5px;line-height:1.9;color:rgba(200,194,182,0.65)}
+.disclaimer-body h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);font-family:'DM Mono',monospace;margin:16px 0 6px}
+.disclaimer-body p{margin-bottom:8px}
+.disclaimer-body strong{color:rgba(200,194,182,0.85);font-weight:500}
+
+/* ─── FOOTER ────────────────────────────── */
+footer{background:var(--black);border-top:1px solid var(--border);padding:44px 48px 32px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:44px;margin-bottom:40px}
+.footer-brand-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;margin-bottom:10px}
+.footer-brand-logo span{color:var(--red)}
+.footer-desc{font-size:12px;color:var(--cream-dim);line-height:1.7;max-width:280px}
+.footer-col-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);font-family:'DM Mono',monospace;margin-bottom:14px}
+.footer-links{display:flex;flex-direction:column;gap:9px}
+.footer-links a{font-size:12px;color:var(--cream-dim);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--cream)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid var(--border);font-size:10px;color:var(--cream-dim);font-family:'DM Mono',monospace;flex-wrap:wrap;gap:10px;letter-spacing:.5px}
+.footer-social{display:flex;gap:20px}
+.footer-social a{color:var(--cream-dim);text-decoration:none;transition:color .2s;letter-spacing:1px}
+.footer-social a:hover{color:var(--cream)}
+
+/* ─── UTIL ──────────────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+[data-lang="th"]{display:none}
+body.lang-th [data-lang="en"]{display:none}
+body.lang-th [data-lang="th"]{display:revert}
+body.lang-th span[data-lang="th"]{display:inline}
+body.lang-th div[data-lang="th"]{display:block}
+body.lang-th p[data-lang="th"]{display:block}
+body.lang-th a[data-lang="th"]{display:flex}
+body.lang-th button[data-lang="th"]{display:inline-block}
+@media(max-width:900px){
+  nav{padding:0 18px}.nav-links{display:none}
+  section{padding:60px 20px}#hero{padding:100px 20px 70px}
+  .steps-layout,.faq-layout,.footer-top,.products-grid,.pricing-grid,.perf-stat-row{grid-template-columns:1fr}
+  .hero-stats{gap:20px}.hero-title{font-size:52px}
+  #lineFloat{bottom:16px;right:16px}
+  #cookieBanner{padding:14px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ RISK POPUP ══════════════════════════════════════ -->
+<div id="riskOverlay">
+  <div class="risk-modal">
+    <div class="risk-modal-tag">⚠ คำเตือนความเสี่ยง / Risk Warning</div>
+    <h2 data-lang="en">IMPORTANT RISK<br/>DISCLOSURE</h2>
+    <h2 data-lang="th">แจ้งเตือนความเสี่ยง<br/>ที่สำคัญ</h2>
+    <p data-lang="en"><strong>Trading Forex and CFDs carries a high level of risk</strong> and may not be suitable for all investors. You may lose some or all of your invested capital. Past performance of any EA or trading strategy does not guarantee future results.</p>
+    <p data-lang="th"><strong>การเทรด Forex และ CFD มีความเสี่ยงสูง</strong> และอาจไม่เหมาะสำหรับนักลงทุนทุกท่าน ท่านอาจสูญเสียเงินทุนทั้งหมดหรือบางส่วน ผลงานในอดีตไม่รับประกันผลในอนาคต</p>
+    <p data-lang="en">NomadAlgo is <strong>not a licensed financial advisor</strong> under Thai law (พ.ร.บ. หลักทรัพย์และตลาดหลักทรัพย์). All content is for <strong>informational and educational purposes only</strong>. Please consult a qualified financial professional before investing.</p>
+    <p data-lang="th">NomadAlgo <strong>ไม่ใช่ที่ปรึกษาทางการเงินที่ได้รับใบอนุญาต</strong>ภายใต้กฎหมายไทย เนื้อหาทั้งหมดเป็นเพียงข้อมูลและการศึกษาเท่านั้น กรุณาปรึกษาผู้เชี่ยวชาญทางการเงินก่อนลงทุน</p>
+    <p style="font-size:11px;color:rgba(200,194,182,0.45)" data-lang="en">By clicking "I Understand", you confirm you are 18+ years old and accept the full risk disclaimer below.</p>
+    <p style="font-size:11px;color:rgba(200,194,182,0.45)" data-lang="th">การกด "รับทราบ" ถือว่าท่านมีอายุ 18 ปีขึ้นไป และยอมรับข้อกำหนดความเสี่ยงทั้งหมด</p>
+    <div class="risk-modal-actions">
+      <button class="risk-accept" onclick="acceptRisk()">
+        <span data-lang="en">✓ I Understand — Enter Site</span>
+        <span data-lang="th">✓ รับทราบ — เข้าสู่เว็บไซต์</span>
+      </button>
+      <button class="risk-decline" onclick="declineRisk()">
+        <span data-lang="en">Leave Site</span>
+        <span data-lang="th">ออกจากเว็บไซต์</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COOKIE BANNER (PDPA) ══════════════════════════════ -->
+<div id="cookieBanner">
+  <p class="cookie-text" data-lang="en">
+    🍪 We use cookies to improve your experience. Under Thailand's <strong>PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล)</strong>, we require your consent. <a href="#disclaimer">Privacy Policy</a>
+  </p>
+  <p class="cookie-text" data-lang="th">
+    🍪 เราใช้คุกกี้เพื่อปรับปรุงประสบการณ์ของท่าน ภายใต้ <strong>พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)</strong> เราต้องได้รับความยินยอมจากท่าน <a href="#disclaimer">นโยบายความเป็นส่วนตัว</a>
+  </p>
+  <div class="cookie-actions">
+    <button class="cookie-accept" onclick="acceptCookie()">
+      <span data-lang="en">Accept All</span>
+      <span data-lang="th">ยอมรับทั้งหมด</span>
+    </button>
+    <button class="cookie-decline" onclick="declineCookie()">
+      <span data-lang="en">Necessary Only</span>
+      <span data-lang="th">เฉพาะที่จำเป็น</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ LINE FLOAT BUTTON ══════════════════════════════════ -->
+<a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" id="lineFloat" title="Chat on LINE">
+  <div class="line-tooltip">LINE: @nomadalgo</div>
+  <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 4C11.163 4 4 10.268 4 18c0 4.897 2.758 9.222 6.98 11.91-.308 1.147-1.113 4.148-1.273 4.788-.198.8.291.793.612.577.252-.169 4.003-2.713 5.624-3.808.666.093 1.348.143 2.057.143 8.837 0 16-6.268 16-14S28.837 4 20 4zm-5.5 18.5h-3a1 1 0 0 1-1-1v-7a1 1 0 0 1 2 0v6h2a1 1 0 0 1 0 2zm3 0a1 1 0 0 1-2 0v-7a1 1 0 0 1 2 0v7zm7.5 0h-3.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 2 0v2.5l2.2-2.9a1 1 0 1 1 1.6 1.2L24.08 17l1.72 2.3a1 1 0 0 1-1.6 1.2L22 18v2.5h.5a1 1 0 0 1 0 2H25zm3.5 0a1 1 0 0 1-2 0v-7a1 1 0 0 1 2 0v7z"/>
+  </svg>
+</a>
+
+<!-- ══ NAV ═════════════════════════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">NOMAD<span>ALGO</span></a>
+  <div class="nav-links">
+    <a href="#performance" data-lang="en">Performance</a>
+    <a href="#performance" data-lang="th">ผลงาน</a>
+    <a href="#products" data-lang="en">Products</a>
+    <a href="#products" data-lang="th">สินค้า</a>
+    <a href="#pricing" data-lang="en">Pricing</a>
+    <a href="#pricing" data-lang="th">ราคา</a>
+    <a href="#faq" data-lang="en">FAQ</a>
+    <a href="#faq" data-lang="th">FAQ</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('th')">TH</button>
+    </div>
+    <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+       target="_blank" rel="noopener" class="nav-cta" data-lang="en">Open Account</a>
+    <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+       target="_blank" rel="noopener" class="nav-cta" data-lang="th">เปิดบัญชี</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span data-lang="en">Algorithmic Trading EA · MH Markets</span>
+      <span data-lang="th">ระบบเทรดอัตโนมัติ EA · MH Markets</span>
+    </div>
+    <div class="hero-title">
+      <div data-lang="en">TRADE<br/><span class="line-red">SMARTER.</span><br/>NOT HARDER.</div>
+      <div data-lang="th">เทรด<br/><span class="line-red">อัจฉริยะ</span><br/>ไม่ใช่หนัก</div>
+    </div>
+    <p class="hero-sub" data-lang="en">
+      NomadAlgo delivers algorithmic Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — running live on MH Markets. Connect via IB and run free, or join Copy Trade with 20% profit share only.
+    </p>
+    <p class="hero-sub" data-lang="th">
+      NomadAlgo นำเสนอ Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — รันสดบน MH Markets ต่อ IB รันฟรี หรือเลือก Copy Trade แบ่งกำไรเพียง 20%
+    </p>
+    <div class="hero-actions">
+      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+         target="_blank" rel="noopener" class="btn-primary" data-lang="en">🔗 Open Account via IB — Free</a>
+      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+         target="_blank" rel="noopener" class="btn-primary" data-lang="th">🔗 เปิดบัญชีผ่าน IB — ฟรี</a>
+      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="btn-outline" data-lang="en">📈 Copy Trade Enquiry</a>
+      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="btn-outline" data-lang="th">📈 สอบถาม Copy Trade</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">XBO<span>+</span>DGB</div>
+        <div class="hero-stat-label" data-lang="en">Live EA Products</div>
+        <div class="hero-stat-label" data-lang="th">EA ที่รันสดอยู่</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">0<span>%</span></div>
+        <div class="hero-stat-label" data-lang="en">Upfront Cost (IB)</div>
+        <div class="hero-stat-label" data-lang="th">ค่าใช้จ่ายล่วงหน้า (IB)</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">20<span>%</span></div>
+        <div class="hero-stat-label" data-lang="en">Profit Share Only</div>
+        <div class="hero-stat-label" data-lang="th">แบ่งเฉพาะกำไร</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">MH<span>·</span></div>
+        <div class="hero-stat-label">MH Markets</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">EURUSD <span class="up">LIVE ●</span></span>
+      <span class="ticker-item">XAUUSD <span class="up">LIVE ●</span></span>
+      <span class="ticker-item">XBO EA <span class="up">RUNNING ●</span></span>
+      <span class="ticker-item">DGB EA <span class="up">RUNNING ●</span></span>
+      <span class="ticker-item">MH Markets <span class="up">✓ REGULATED</span></span>
+      <span class="ticker-item">MYFXBOOK <span class="up">✓ VERIFIED</span></span>
+      <span class="ticker-item">COPY TRADE <span class="up">OPEN</span></span>
+      <span class="ticker-item">IB CONNECT <span class="up">FREE</span></span>
+      <span class="ticker-item">EURUSD <span class="up">LIVE ●</span></span>
+      <span class="ticker-item">XAUUSD <span class="up">LIVE ●</span></span>
+      <span class="ticker-item">XBO EA <span class="up">RUNNING ●</span></span>
+      <span class="ticker-item">DGB EA <span class="up">RUNNING ●</span></span>
+      <span class="ticker-item">MH Markets <span class="up">✓ REGULATED</span></span>
+      <span class="ticker-item">MYFXBOOK <span class="up">✓ VERIFIED</span></span>
+      <span class="ticker-item">COPY TRADE <span class="up">OPEN</span></span>
+      <span class="ticker-item">IB CONNECT <span class="up">FREE</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PERFORMANCE ═════════════════════════════════════════ -->
+<section id="performance">
+  <div class="perf-header reveal">
+    <div>
+      <div class="section-label" data-lang="en">Live Performance · Verified by Myfxbook</div>
+      <div class="section-label" data-lang="th">ผลงานสด · ยืนยันโดย Myfxbook</div>
+      <div class="section-title" data-lang="en">REAL RESULTS.<br/>LIVE &amp; VERIFIED.</div>
+      <div class="section-title" data-lang="th">ผลงานจริง<br/>สดและยืนยันแล้ว</div>
+    </div>
+    <div class="perf-tabs">
+      <button class="perf-tab active" onclick="switchEA(this,'xbo')">XBO EA</button>
+      <button class="perf-tab" onclick="switchEA(this,'dgb')">DGB EA</button>
+    </div>
+  </div>
+
+  <!-- Myfxbook Live iFrame embed -->
+  <div id="perfEmbed" class="myfx-wrap reveal">
+    <div class="myfx-header">
+      <span class="myfx-label" id="embedLabel">XBO Portfolio · Live Account</span>
+      <span class="myfx-live">LIVE DATA</span>
+      <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener" id="embedLink" class="myfx-link">View on Myfxbook ↗</a>
+    </div>
+    <div class="myfx-iframe-box">
+      <iframe id="myfxFrame"
+        src="https://widgets.myfxbook.com/assets/embed/profile-embed.html?id=11957380"
+        loading="lazy"
+        title="XBO EA Live Performance on Myfxbook"
+        sandbox="allow-scripts allow-same-origin allow-popups">
+      </iframe>
+    </div>
+  </div>
+  <p style="font-size:10px;color:rgba(200,194,182,0.35);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.5px" data-lang="en">
+    ⚠ Live data sourced directly from Myfxbook. Past performance does not guarantee future results. All trading involves risk.
+  </p>
+  <p style="font-size:10px;color:rgba(200,194,182,0.35);margin-top:10px;font-family:'DM Mono',monospace;letter-spacing:.5px" data-lang="th">
+    ⚠ ข้อมูลสดจาก Myfxbook โดยตรง ผลงานในอดีตไม่รับประกันผลในอนาคต การเทรดทุกรูปแบบมีความเสี่ยง
+  </p>
+</section>
+
+<!-- ══ HOW IT WORKS ════════════════════════════════════════ -->
+<section id="how">
+  <div class="section-label reveal" data-lang="en">How It Works</div>
+  <div class="section-label reveal" data-lang="th">วิธีการเริ่มต้น</div>
+  <div class="section-title reveal" data-lang="en">READY IN<br/>3 STEPS.</div>
+  <div class="section-title reveal" data-lang="th">เริ่มได้ใน<br/>3 ขั้นตอน</div>
+  <div class="divider reveal"></div>
+  <div class="steps-layout">
+    <div class="steps-list">
+      <div class="step-item active" onclick="setStep(this,0)">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title" data-lang="en">Choose Your Offer</div>
+          <div class="step-title" data-lang="th">เลือก Offer ของคุณ</div>
+          <div class="step-desc" data-lang="en">IB = run EA free, keep all profits. Copy Trade = hands-free, 20% profit share only.</div>
+          <div class="step-desc" data-lang="th">IB = รัน EA ฟรี เก็บกำไรทั้งหมด | Copy Trade = ไม่ต้องดูแล แบ่งกำไร 20%</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="setStep(this,1)">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title" data-lang="en">Open Account at MH Markets</div>
+          <div class="step-title" data-lang="th">เปิดบัญชีที่ MH Markets</div>
+          <div class="step-desc" data-lang="en">Register via our IB link. MH Markets is a regulated broker with fast execution and low spreads.</div>
+          <div class="step-desc" data-lang="th">สมัครผ่านลิงก์ IB ของเรา MH Markets เป็นโบรกเกอร์ที่ได้รับใบอนุญาต สเปรดต่ำ</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="setStep(this,2)">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title" data-lang="en">Install EA &amp; Go Live</div>
+          <div class="step-title" data-lang="th">ติดตั้ง EA แล้วเริ่มได้เลย</div>
+          <div class="step-desc" data-lang="en">We send EA files + setup guide via LINE. Install on MT4/MT5 and go live same day. We support you every step.</div>
+          <div class="step-desc" data-lang="th">เราส่งไฟล์ EA และคู่มือผ่าน LINE ติดตั้งบน MT4/MT5 เริ่มได้วันเดียวกัน มีทีมช่วยตลอด</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-visual reveal" id="stepVisual">
+      <div class="step-visual-inner">
+        <span class="step-icon-big" id="stepIcon">🎯</span>
+        <div class="step-visual-title" data-lang="en" id="stepTitle">CHOOSE YOUR PATH</div>
+        <div class="step-visual-title" data-lang="th" id="stepTitleTh">เลือก OFFER ของคุณ</div>
+        <p class="step-visual-desc" data-lang="en" id="stepDesc">Two clear paths — IB (free, keep all profits) or Copy Trade (hands-free, 20% share). No hidden fees.</p>
+        <p class="step-visual-desc" data-lang="th" id="stepDescTh">สองทางเลือกที่ชัดเจน — IB (ฟรี เก็บกำไรทั้งหมด) หรือ Copy Trade (ไม่ต้องดูแล 20% share)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRODUCTS ════════════════════════════════════════════ -->
+<section id="products">
+  <div class="section-label reveal" data-lang="en">Our EA Products</div>
+  <div class="section-label reveal" data-lang="th">EA ของเรา</div>
+  <div class="section-title reveal" data-lang="en">MEET XBO<br/>&amp; DGB.</div>
+  <div class="section-title reveal" data-lang="th">รู้จักกับ<br/>XBO &amp; DGB</div>
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-tag">EA · LIVE ON MYFXBOOK</div>
+      <div class="product-name">XBO</div>
+      <div class="product-tagline" data-lang="en">Live verified portfolio on Myfxbook. Momentum-driven EA running on MH Markets.</div>
+      <div class="product-tagline" data-lang="th">พอร์ตยืนยันสดบน Myfxbook รัน EA แบบ Momentum บน MH Markets</div>
+      <div class="product-stats-row">
+        <div>
+          <div class="product-stat-val green">LIVE</div>
+          <div class="product-stat-lbl" data-lang="en">Status</div>
+          <div class="product-stat-lbl" data-lang="th">สถานะ</div>
+        </div>
+        <div>
+          <div class="product-stat-val">MT4/5</div>
+          <div class="product-stat-lbl" data-lang="en">Platform</div>
+          <div class="product-stat-lbl" data-lang="th">แพลตฟอร์ม</div>
+        </div>
+        <div>
+          <div class="product-stat-val">MH</div>
+          <div class="product-stat-lbl">Broker</div>
+        </div>
+      </div>
+      <div class="product-features">
+        <div class="product-feature" data-lang="en">Live Myfxbook verified account</div>
+        <div class="product-feature" data-lang="th">บัญชียืนยันสดบน Myfxbook</div>
+        <div class="product-feature" data-lang="en">Runs free via IB referral</div>
+        <div class="product-feature" data-lang="th">รันฟรีเมื่อสมัครผ่าน IB</div>
+        <div class="product-feature" data-lang="en">Available for Copy Trade</div>
+        <div class="product-feature" data-lang="th">รองรับ Copy Trade</div>
+        <div class="product-feature" data-lang="en">Full support via LINE OA</div>
+        <div class="product-feature" data-lang="th">ซัพพอร์ตผ่าน LINE OA</div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener" class="product-cta" data-lang="en">View on Myfxbook →</a>
+        <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener" class="product-cta" data-lang="th">ดูบน Myfxbook →</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+           target="_blank" rel="noopener" class="product-cta" style="color:var(--red)" data-lang="en">Get XBO via IB →</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+           target="_blank" rel="noopener" class="product-cta" style="color:var(--red)" data-lang="th">รับ XBO ผ่าน IB →</a>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:.1s">
+      <div class="product-tag">EA · LIVE ON MYFXBOOK</div>
+      <div class="product-name">DGB</div>
+      <div class="product-tagline" data-lang="en">RSIGB strategy — live verified portfolio on Myfxbook. Consistent signal EA on MH Markets.</div>
+      <div class="product-tagline" data-lang="th">กลยุทธ์ RSIGB — พอร์ตยืนยันสดบน Myfxbook รันสัญญาณสม่ำเสมอบน MH Markets</div>
+      <div class="product-stats-row">
+        <div>
+          <div class="product-stat-val green">LIVE</div>
+          <div class="product-stat-lbl" data-lang="en">Status</div>
+          <div class="product-stat-lbl" data-lang="th">สถานะ</div>
+        </div>
+        <div>
+          <div class="product-stat-val">MT4/5</div>
+          <div class="product-stat-lbl" data-lang="en">Platform</div>
+          <div class="product-stat-lbl" data-lang="th">แพลตฟอร์ม</div>
+        </div>
+        <div>
+          <div class="product-stat-val">MH</div>
+          <div class="product-stat-lbl">Broker</div>
+        </div>
+      </div>
+      <div class="product-features">
+        <div class="product-feature" data-lang="en">Live Myfxbook portfolio (RSIGB)</div>
+        <div class="product-feature" data-lang="th">พอร์ต RSIGB ยืนยันสดบน Myfxbook</div>
+        <div class="product-feature" data-lang="en">Runs free via IB referral</div>
+        <div class="product-feature" data-lang="th">รันฟรีเมื่อสมัครผ่าน IB</div>
+        <div class="product-feature" data-lang="en">Available for Copy Trade</div>
+        <div class="product-feature" data-lang="th">รองรับ Copy Trade</div>
+        <div class="product-feature" data-lang="en">Full support via LINE OA</div>
+        <div class="product-feature" data-lang="th">ซัพพอร์ตผ่าน LINE OA</div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <a href="https://www.myfxbook.com/portfolio/rsigb/11925514" target="_blank" rel="noopener" class="product-cta" data-lang="en">View on Myfxbook →</a>
+        <a href="https://www.myfxbook.com/portfolio/rsigb/11925514" target="_blank" rel="noopener" class="product-cta" data-lang="th">ดูบน Myfxbook →</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+           target="_blank" rel="noopener" class="product-cta" style="color:var(--red)" data-lang="en">Get DGB via IB →</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+           target="_blank" rel="noopener" class="product-cta" style="color:var(--red)" data-lang="th">รับ DGB ผ่าน IB →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ═════════════════════════════════════════════ -->
+<section id="pricing">
+  <div class="section-label reveal" data-lang="en">Pricing &amp; Offers</div>
+  <div class="section-label reveal" data-lang="th">ราคาและ Offer</div>
+  <div class="section-title reveal" data-lang="en">TWO WAYS<br/>TO JOIN.</div>
+  <div class="section-title reveal" data-lang="th">สองวิธี<br/>ในการเข้าร่วม</div>
+  <div class="divider reveal"></div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <span class="pricing-icon">🔗</span>
+      <div class="pricing-name" data-lang="en">IB Connect</div>
+      <div class="pricing-name" data-lang="th">ต่อ IB</div>
+      <div class="pricing-price"><span data-lang="en">FREE</span><span data-lang="th">ฟรี</span></div>
+      <div class="pricing-price-sub" data-lang="en">Zero cost · Zero profit share · Keep 100%</div>
+      <div class="pricing-price-sub" data-lang="th">ไม่มีค่าใช้จ่าย · ไม่แบ่งกำไร · เก็บ 100%</div>
+      <div class="pricing-features-list">
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Full EA access (XBO or DGB)</span><span data-lang="th">เข้าถึง EA เต็มรูปแบบ</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Open broker account at MH Markets via IB link</span><span data-lang="th">เปิดบัญชีโบรกเกอร์ MH Markets ผ่านลิงก์ IB</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">EA files + MT4/MT5 setup guide via LINE</span><span data-lang="th">ไฟล์ EA + คู่มือตั้งค่าส่งผ่าน LINE</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Ongoing LINE OA support</span><span data-lang="th">ซัพพอร์ตผ่าน LINE OA ตลอด</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Parameter updates &amp; alerts</span><span data-lang="th">อัปเดตพารามิเตอร์และการแจ้งเตือน</span></div>
+        <div class="pf-item" style="opacity:.35"><span class="pf-cross">—</span><span data-lang="en">You manage your own VPS/server</span><span data-lang="th">ต้องดูแล VPS ของตัวเอง</span></div>
+      </div>
+      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+         target="_blank" rel="noopener" class="pricing-btn" data-lang="en">Open MH Markets Account →</a>
+      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+         target="_blank" rel="noopener" class="pricing-btn" data-lang="th">เปิดบัญชี MH Markets →</a>
+    </div>
+    <div class="pricing-card featured reveal" style="transition-delay:.1s">
+      <span class="pricing-icon">📈</span>
+      <div class="pricing-name" data-lang="en">Copy Trade</div>
+      <div class="pricing-name" data-lang="th">Copy Trade</div>
+      <div class="pricing-price">20<span>%</span></div>
+      <div class="pricing-price-sub" data-lang="en">Profit share only · No monthly fee · Pay on profit</div>
+      <div class="pricing-price-sub" data-lang="th">แบ่งกำไรเท่านั้น · ไม่มีค่ารายเดือน · จ่ายเมื่อกำไร</div>
+      <div class="pricing-features-list">
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Fully automated — no MT4/VPS needed</span><span data-lang="th">อัตโนมัติสมบูรณ์ ไม่ต้องมี MT4/VPS</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Trades copied from master account in real-time</span><span data-lang="th">คัดลอกออเดอร์จากบัญชีหลักแบบเรียลไทม์</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Both XBO + DGB signals available</span><span data-lang="th">รับสัญญาณทั้ง XBO และ DGB</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Monthly performance report via LINE</span><span data-lang="th">รายงานผลประจำเดือนผ่าน LINE</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">High watermark — pay only on new profit highs</span><span data-lang="th">High Watermark — จ่ายเมื่อทำ All-Time High กำไรใหม่</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Dedicated support via LINE OA</span><span data-lang="th">ซัพพอร์ตเฉพาะผ่าน LINE OA</span></div>
+      </div>
+      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="pricing-btn" data-lang="en">LINE: @nomadalgo to Start →</a>
+      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="pricing-btn" data-lang="th">LINE: @nomadalgo เพื่อเริ่มต้น →</a>
+    </div>
+  </div>
+  <table class="compare-table reveal">
+    <thead>
+      <tr>
+        <th data-lang="en">Feature</th><th data-lang="th">ฟีเจอร์</th>
+        <th>IB Connect</th><th>Copy Trade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td data-lang="en">Cost to Start</td><td data-lang="th">ค่าเริ่มต้น</td><td><span class="ck-yes">✓</span> Free</td><td><span class="ck-yes">✓</span> Free</td></tr>
+      <tr><td data-lang="en">EA Access</td><td data-lang="th">เข้าถึง EA</td><td><span class="ck-info">1 EA</span></td><td><span class="ck-yes">✓</span> Both</td></tr>
+      <tr><td data-lang="en">Profit Share</td><td data-lang="th">ส่วนแบ่งกำไร</td><td><span class="ck-no">—</span> None</td><td><span class="ck-info">20%</span></td></tr>
+      <tr><td data-lang="en">Need Own VPS</td><td data-lang="th">ต้องมี VPS เอง</td><td><span class="ck-info">Required</span></td><td><span class="ck-no">—</span> No</td></tr>
+      <tr><td data-lang="en">Hands-Free</td><td data-lang="th">ไม่ต้องดูแล</td><td><span class="ck-no">—</span></td><td><span class="ck-yes">✓</span></td></tr>
+      <tr><td>Broker</td><td>Broker</td><td colspan="2" style="text-align:center">MH Markets</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ══ FAQ ═════════════════════════════════════════════════ -->
+<section id="faq">
+  <div class="faq-layout">
+    <div>
+      <div class="section-label" data-lang="en">FAQ</div>
+      <div class="section-label" data-lang="th">คำถามที่พบบ่อย</div>
+      <div class="section-title" data-lang="en">QUESTIONS<br/>ANSWERED.</div>
+      <div class="section-title" data-lang="th">ตอบทุก<br/>คำถาม</div>
+      <div class="divider"></div>
+      <div class="contact-box" style="margin-top:28px">
+        <div class="contact-box-title" data-lang="en">CONTACT US</div>
+        <div class="contact-box-title" data-lang="th">ติดต่อเรา</div>
+        <p class="contact-box-desc" data-lang="en">Fastest response via LINE OA. We typically reply within a few hours.</p>
+        <p class="contact-box-desc" data-lang="th">ตอบเร็วที่สุดผ่าน LINE OA ปกติตอบกลับภายในไม่กี่ชั่วโมง</p>
+        <div class="contact-links">
+          <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">💬</span>
+            <div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500">LINE OA (หลัก)</div>
+              <div style="font-size:11px;color:var(--cream-dim)">@nomadalgo</div>
+            </div>
+          </a>
+          <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">📊</span>
+            <div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500">Myfxbook — XBO</div>
+              <div style="font-size:11px;color:var(--cream-dim)">myfxbook.com/portfolio/xbo/11957380</div>
+            </div>
+          </a>
+          <a href="https://www.myfxbook.com/portfolio/rsigb/11925514" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">📊</span>
+            <div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500">Myfxbook — DGB (RSIGB)</div>
+              <div style="font-size:11px;color:var(--cream-dim)">myfxbook.com/portfolio/rsigb/11925514</div>
+            </div>
+          </a>
+          <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+             target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">🔗</span>
+            <div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500">MH Markets — สมัคร IB</div>
+              <div style="font-size:11px;color:var(--cream-dim)">my.mhmarkets.com (รหัส IB ของ NomadAlgo)</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">What is the minimum deposit to start?</span>
+          <span class="faq-q-text" data-lang="th">ฝากขั้นต่ำเท่าไหร่?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">For IB: open an MH Markets account via our link and deposit their minimum (typically $100–$200). We recommend $300+ for proper lot sizing. For Copy Trade: contact us via LINE @nomadalgo for current minimum requirements.</div>
+        <div class="faq-a" data-lang="th">IB: เปิดบัญชี MH Markets ผ่านลิงก์ของเรา ฝากตามขั้นต่ำของโบรก (ประมาณ $100–200) แนะนำ $300+ เพื่อ Lot Sizing ที่เหมาะสม Copy Trade: สอบถาม LINE @nomadalgo</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">How does the IB free model work exactly?</span>
+          <span class="faq-q-text" data-lang="th">โมเดล IB ฟรีทำงานอย่างไร?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">You register at MH Markets through our IB referral link. MH Markets pays us a commission (spread rebate) on each trade you make. This covers our cost — you pay nothing and keep 100% of your profits.</div>
+        <div class="faq-a" data-lang="th">คุณสมัคร MH Markets ผ่านลิงก์ IB ของเรา โบรกเกอร์จ่าย Commission ให้เราต่อทุกเทรด ซึ่งครอบคลุมต้นทุนของเรา คุณไม่ต้องจ่ายอะไรและเก็บกำไร 100%</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">Why MH Markets specifically?</span>
+          <span class="faq-q-text" data-lang="th">ทำไมต้อง MH Markets?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">Our EAs are optimized and tested on MH Markets' MT4/MT5 platform. Using the same broker ensures the EA behaves exactly as backtested and live-tested. MH Markets is a regulated broker with tight spreads and reliable execution.</div>
+        <div class="faq-a" data-lang="th">EA ของเราถูก Optimize และทดสอบบนแพลตฟอร์ม MT4/MT5 ของ MH Markets การใช้โบรกเกอร์เดียวกันทำให้ EA ทำงานตรงกับที่ทดสอบไว้ MH Markets มีใบอนุญาต สเปรดแน่น และ Execution เชื่อถือได้</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">How is the 20% profit share calculated?</span>
+          <span class="faq-q-text" data-lang="th">คิด Profit Share 20% อย่างไร?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">Profit share is calculated monthly on net new profits only (high watermark model). Example: account makes $1,000 profit → we take $200. If no profit that month → zero fee. If the account is at a loss from a previous month, we only charge once it surpasses the previous high.</div>
+        <div class="faq-a" data-lang="th">คิดรายเดือนจากกำไรสุทธิใหม่เท่านั้น (High Watermark) เช่น กำไร $1,000 → เราได้ $200 หากเดือนนั้นไม่มีกำไร → ไม่มีค่าใช้จ่าย หากยังขาดทุนจากเดือนก่อน → คิดเมื่อผ่านระดับสูงสุดเดิม</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">Can I verify the EA performance myself?</span>
+          <span class="faq-q-text" data-lang="th">ตรวจสอบผลงาน EA เองได้ไหม?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">Yes. Both XBO and DGB have live, public Myfxbook portfolios you can verify independently: XBO → myfxbook.com/portfolio/xbo/11957380 | DGB → myfxbook.com/portfolio/rsigb/11925514. No password required to view.</div>
+        <div class="faq-a" data-lang="th">ได้เลย ทั้ง XBO และ DGB มีพอร์ต Myfxbook สาธารณะที่คุณตรวจสอบได้เองโดยอิสระ XBO → myfxbook.com/portfolio/xbo/11957380 | DGB → myfxbook.com/portfolio/rsigb/11925514 ไม่ต้องใช้รหัสผ่าน</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text" data-lang="en">Do I need trading experience?</span>
+          <span class="faq-q-text" data-lang="th">ต้องมีประสบการณ์เทรดไหม?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a" data-lang="en">For Copy Trade — no experience needed. We handle everything and send monthly reports via LINE. For IB/EA — basic MT4/MT5 knowledge is helpful but not required. We send a full setup guide and provide support through every step via LINE @nomadalgo.</div>
+        <div class="faq-a" data-lang="th">Copy Trade ไม่ต้องมีประสบการณ์ เราจัดการทุกอย่างและส่งรายงานรายเดือนผ่าน LINE สำหรับ IB/EA ความรู้ MT4/MT5 พื้นฐานช่วยได้ แต่ไม่จำเป็น เรามีคู่มือและซัพพอร์ตตลอด</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DISCLAIMER ══════════════════════════════════════════ -->
+<section id="disclaimer" style="padding:80px 48px">
+  <div class="disclaimer-box">
+    <div class="disclaimer-title">
+      ⚠ คำเตือนความเสี่ยงและข้อจำกัดความรับผิดชอบ / Risk Disclaimer
+    </div>
+    <div class="disclaimer-body">
+
+      <h4>1. ความเสี่ยงในการลงทุน / Investment Risk</h4>
+      <p data-lang="en"><strong>Trading Forex, CFDs, and using Expert Advisors (EA) involves substantial risk of loss and is not suitable for all investors.</strong> The high degree of leverage available in Forex trading can work against you as well as for you. Before deciding to trade Forex or use any automated trading system, you should carefully consider your investment objectives, level of experience, and risk appetite.</p>
+      <p data-lang="th"><strong>การเทรด Forex, CFD และการใช้ Expert Advisor (EA) มีความเสี่ยงสูงในการสูญเสียเงินทุน และไม่เหมาะสำหรับนักลงทุนทุกราย</strong> Leverage สูงที่มีในการเทรด Forex อาจทำให้ขาดทุนได้มาก กรุณาพิจารณาวัตถุประสงค์การลงทุน ระดับประสบการณ์ และความสามารถในการรับความเสี่ยงก่อนตัดสินใจ</p>
+
+      <h4>2. ผลงานในอดีต / Past Performance</h4>
+      <p data-lang="en"><strong>Past performance of XBO, DGB, or any EA is not indicative of future results.</strong> All performance data shown on this website, including Myfxbook statistics, represents historical results which may not be replicated. You may lose all of your invested capital.</p>
+      <p data-lang="th"><strong>ผลงานในอดีตของ XBO, DGB หรือ EA ใดๆ ไม่รับประกันผลในอนาคต</strong> ข้อมูลผลงานทั้งหมดในเว็บไซต์นี้รวมถึงสถิติจาก Myfxbook เป็นผลลัพธ์ในอดีตซึ่งอาจไม่เกิดซ้ำ ท่านอาจสูญเสียเงินทุนทั้งหมด</p>
+
+      <h4>3. สถานะของ NomadAlgo / Status of NomadAlgo</h4>
+      <p data-lang="en"><strong>NomadAlgo is NOT a licensed financial advisor, investment advisor, securities dealer, or regulated entity under Thai law</strong> (พระราชบัญญัติหลักทรัพย์และตลาดหลักทรัพย์ พ.ศ. 2535 หรือ พ.ร.บ. ประกอบธุรกิจทางการเงิน). All content, products, and services provided by NomadAlgo are for <strong>informational and educational purposes only</strong> and do not constitute financial advice, investment recommendations, or solicitation to invest.</p>
+      <p data-lang="th"><strong>NomadAlgo ไม่ใช่ที่ปรึกษาทางการเงิน นักวิเคราะห์หลักทรัพย์ หรือนิติบุคคลที่ได้รับใบอนุญาตภายใต้กฎหมายไทย</strong> ไม่ว่าจะเป็น พ.ร.บ. หลักทรัพย์และตลาดหลักทรัพย์ หรือกฎหมายที่เกี่ยวข้อง เนื้อหา ผลิตภัณฑ์ และบริการทั้งหมดมีวัตถุประสงค์เพื่อ<strong>ให้ข้อมูลและการศึกษาเท่านั้น</strong> ไม่ใช่คำแนะนำทางการเงินหรือการชักชวนให้ลงทุน</p>
+
+      <h4>4. ความรับผิดชอบของผู้ใช้ / User Responsibility</h4>
+      <p data-lang="en">By using this website or engaging with NomadAlgo's services, you acknowledge that: (i) you are solely responsible for your trading decisions, (ii) you will not hold NomadAlgo liable for any losses incurred, (iii) you have read and understood this disclaimer in full, and (iv) you are at least 18 years of age.</p>
+      <p data-lang="th">การใช้เว็บไซต์หรือบริการของ NomadAlgo ถือว่าท่านรับทราบว่า (i) ท่านรับผิดชอบต่อการตัดสินใจเทรดของตนเองแต่เพียงผู้เดียว (ii) ท่านจะไม่ฟ้องร้องหรือเรียกร้องค่าเสียหายจาก NomadAlgo ในกรณีที่เกิดการขาดทุน (iii) ท่านได้อ่านและเข้าใจข้อกำหนดนี้อย่างครบถ้วน และ (iv) ท่านมีอายุตั้งแต่ 18 ปีขึ้นไป</p>
+
+      <h4>5. นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA) / Personal Data Protection</h4>
+      <p data-lang="en">NomadAlgo collects contact information (LINE ID, etc.) only for service delivery purposes. Data is not shared with third parties without consent. Under Thailand's Personal Data Protection Act (PDPA, พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562), you have the right to access, correct, or delete your personal data. Contact us via LINE @nomadalgo to exercise these rights.</p>
+      <p data-lang="th">NomadAlgo เก็บข้อมูลติดต่อ (LINE ID ฯลฯ) เพื่อวัตถุประสงค์การให้บริการเท่านั้น ไม่มีการแบ่งปันข้อมูลกับบุคคลที่สามโดยไม่ได้รับความยินยอม ภายใต้ พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 ท่านมีสิทธิในการเข้าถึง แก้ไข หรือลบข้อมูลส่วนบุคคลของท่าน ติดต่อ LINE @nomadalgo เพื่อใช้สิทธิเหล่านี้</p>
+
+      <h4>6. บุคคลที่ไม่ควรใช้บริการ / Not Suitable For</h4>
+      <p data-lang="en">Our services are <strong>not suitable</strong> for persons who: cannot afford to sustain a total loss of invested capital, are subject to financial difficulties, are under 18 years of age, or reside in jurisdictions where such services are prohibited by law.</p>
+      <p data-lang="th">บริการของเรา<strong>ไม่เหมาะสำหรับ</strong>บุคคลที่ไม่สามารถรับการสูญเสียเงินทุนทั้งหมดได้ มีปัญหาทางการเงิน อายุต่ำกว่า 18 ปี หรืออาศัยอยู่ในเขตอำนาจศาลที่บริการดังกล่าวเป็นสิ่งต้องห้ามตามกฎหมาย</p>
+
+      <p style="margin-top:16px;font-size:10.5px;color:rgba(200,194,182,0.35)" data-lang="en">Last updated: 2025 · NomadAlgo · nomadalgo.com · LINE: @nomadalgo</p>
+      <p style="margin-top:16px;font-size:10.5px;color:rgba(200,194,182,0.35)" data-lang="th">อัปเดตล่าสุด: 2025 · NomadAlgo · nomadalgo.com · LINE: @nomadalgo</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo">NOMAD<span>ALGO</span></div>
+      <p class="footer-desc" data-lang="en">Algorithmic EA trading solutions built for independent traders. XBO &amp; DGB running live on MH Markets. Verified on Myfxbook.</p>
+      <p class="footer-desc" data-lang="th">ระบบ EA Trading สำหรับนักเทรดอิสระ XBO &amp; DGB รันสดบน MH Markets ยืนยันผ่าน Myfxbook</p>
+    </div>
+    <div>
+      <div class="footer-col-title" data-lang="en">Products</div>
+      <div class="footer-col-title" data-lang="th">สินค้า</div>
+      <div class="footer-links">
+        <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener">XBO EA (Myfxbook)</a>
+        <a href="https://www.myfxbook.com/portfolio/rsigb/11925514" target="_blank" rel="noopener">DGB EA (Myfxbook)</a>
+        <a href="#pricing" data-lang="en">IB Connect — Free</a>
+        <a href="#pricing" data-lang="th">IB Connect — ฟรี</a>
+        <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" data-lang="en">Copy Trade</a>
+        <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" data-lang="th">Copy Trade</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title" data-lang="en">Legal</div>
+      <div class="footer-col-title" data-lang="th">กฎหมาย</div>
+      <div class="footer-links">
+        <a href="#disclaimer" data-lang="en">Risk Disclaimer</a>
+        <a href="#disclaimer" data-lang="th">คำเตือนความเสี่ยง</a>
+        <a href="#disclaimer" data-lang="en">Privacy Policy (PDPA)</a>
+        <a href="#disclaimer" data-lang="th">นโยบายข้อมูล (PDPA)</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="en">Open MH Markets Account</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="th">เปิดบัญชี MH Markets</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 NomadAlgo · nomadalgo.com</span>
+    <div class="footer-social">
+      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener">LINE</a>
+      <a href="https://www.myfxbook.com/portfolio/xbo/11957380" target="_blank" rel="noopener">MYFXBOOK</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Language Switcher ─────────────────────────────────
+function setLang(l) {
+  document.body.classList.toggle('lang-th', l==='th');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim().toLowerCase()===l);
+  });
+}
+
+// ── Risk Popup ────────────────────────────────────────
+function acceptRisk() {
+  document.getElementById('riskOverlay').style.display='none';
+  setTimeout(()=>{ document.getElementById('cookieBanner').classList.add('show'); }, 500);
+}
+function declineRisk() {
+  window.location.href = 'about:blank';
+}
+
+// ── Cookie Banner ─────────────────────────────────────
+function acceptCookie() { document.getElementById('cookieBanner').style.display='none'; }
+function declineCookie() { document.getElementById('cookieBanner').style.display='none'; }
+
+// ── Myfxbook EA Tab ───────────────────────────────────
+const myfxData = {
+  xbo: {
+    label: 'XBO Portfolio · Live Account',
+    url:   'https://widgets.myfxbook.com/assets/embed/profile-embed.html?id=11957380',
+    link:  'https://www.myfxbook.com/portfolio/xbo/11957380',
+    title: 'XBO EA Live Performance on Myfxbook'
+  },
+  dgb: {
+    label: 'DGB (RSIGB) Portfolio · Live Account',
+    url:   'https://widgets.myfxbook.com/assets/embed/profile-embed.html?id=11925514',
+    link:  'https://www.myfxbook.com/portfolio/rsigb/11925514',
+    title: 'DGB EA Live Performance on Myfxbook'
+  }
+};
+function switchEA(btn, ea) {
+  document.querySelectorAll('.perf-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const d = myfxData[ea];
+  document.getElementById('embedLabel').textContent = d.label;
+  document.getElementById('embedLink').href = d.link;
+  const f = document.getElementById('myfxFrame');
+  f.title = d.title;
+  f.src = d.url;
+}
+
+// ── Steps ─────────────────────────────────────────────
+const stepData = [
+  { icon:'🎯', titleEn:'CHOOSE YOUR PATH', titleTh:'เลือก OFFER',
+    descEn:'IB = free + keep 100% profits. Copy Trade = hands-free + 20% share only.',
+    descTh:'IB = ฟรี เก็บกำไร 100% | Copy Trade = ไม่ต้องดูแล แบ่งกำไร 20%' },
+  { icon:'🏦', titleEn:'OPEN AT MH MARKETS', titleTh:'เปิดบัญชี MH MARKETS',
+    descEn:'Register via our IB link. Regulated broker, tight spreads, MT4/MT5 ready.',
+    descTh:'สมัครผ่านลิงก์ IB ของเรา โบรกเกอร์มีใบอนุญาต สเปรดแน่น รองรับ MT4/MT5' },
+  { icon:'🚀', titleEn:'INSTALL &amp; GO LIVE', titleTh:'ติดตั้งและเริ่มได้เลย',
+    descEn:'We send EA + guide via LINE. Install on MT4/MT5 and go live same day.',
+    descTh:'ส่งไฟล์ EA + คู่มือผ่าน LINE ติดตั้งบน MT4/MT5 เริ่มได้วันเดียวกัน' }
+];
+function setStep(el, idx) {
+  document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  const d = stepData[idx];
+  document.getElementById('stepIcon').textContent = d.icon;
+  document.getElementById('stepTitle').innerHTML = d.titleEn;
+  document.getElementById('stepTitleTh').innerHTML = d.titleTh;
+  document.getElementById('stepDesc').innerHTML = d.descEn;
+  document.getElementById('stepDescTh').innerHTML = d.descTh;
+}
+
+// ── FAQ ───────────────────────────────────────────────
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+// ── Scroll Reveal ─────────────────────────────────────
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible') });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Init
+setLang('en');
+</script>
+</body>
+</html>
