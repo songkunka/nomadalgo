@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>NomadAlgo — Algorithmic Trading EA | XBO &amp; DGB</title>
-<meta name="description" content="NomadAlgo — Expert Advisor XBO และ DGB สำหรับ Forex Trading บน MH Markets รันฟรีผ่าน IB หรือ Copy Trade 20% Profit Share"/>
+<meta name="description" content="NomadAlgo — Expert Advisor XBO และ DGB สำหรับ Forex Trading รันฟรีผ่าน IB หรือเช่า Connect License 30/90/365 วัน ยืนยันผลงานบน Myfxbook"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -128,11 +128,6 @@ nav{
   mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent);
 }
 .hero-accent{position:absolute;right:-100px;top:50%;transform:translateY(-50%);width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(232,0,29,0.1) 0%,transparent 70%);pointer-events:none}
-.hero-ticker{position:absolute;bottom:32px;left:0;right:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;overflow:hidden}
-.ticker-track{display:flex;gap:60px;white-space:nowrap;animation:ticker 28s linear infinite}
-.ticker-item{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--cream-dim)}
-.ticker-item .up{color:var(--green)}.ticker-item .dn{color:var(--red)}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .hero-content{position:relative;z-index:2;max-width:720px}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border-red);border-radius:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:28px}
 .hero-badge::before{content:'';width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 2s infinite}
@@ -145,10 +140,6 @@ nav{
 .btn-primary:hover{background:var(--red-dim);transform:translateY(-1px)}
 .btn-outline{padding:14px 34px;background:none;border:1px solid var(--border);border-radius:1px;color:var(--cream-dim);font-family:'Sarabun',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
 .btn-outline:hover{border-color:var(--cream-dim);color:var(--cream)}
-.hero-stats{display:flex;gap:48px;margin-top:52px;padding-top:28px;border-top:1px solid var(--border)}
-.hero-stat-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px}
-.hero-stat-num span{color:var(--red)}
-.hero-stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);margin-top:2px;font-family:'DM Mono',monospace}
 
 /* ─── SECTIONS ──────────────────────────── */
 section{padding:96px 48px}
@@ -229,23 +220,37 @@ section{padding:96px 48px}
 
 /* ─── PRICING ───────────────────────────── */
 #pricing{background:var(--black)}
-.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
-.pricing-card{background:var(--black-3);border:1px solid var(--border);padding:36px;position:relative}
+.pricing-ib-banner{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:var(--black-3);border:1px solid var(--border);padding:28px 36px;margin-top:48px;margin-bottom:32px}
+.pricing-ib-left{display:flex;align-items:center;gap:20px}
+.pricing-ib-icon{font-size:28px;flex-shrink:0}
+.pricing-ib-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:2px}
+.pricing-ib-sub{font-size:11px;color:var(--cream-dim);letter-spacing:1px}
+.pricing-ib-features{display:flex;gap:20px;flex-wrap:wrap}
+.pricing-ib-feat{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--cream-dim)}
+.pricing-ib-feat::before{content:'✓';color:var(--green);font-size:12px}
+.pricing-license-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--cream-dim);font-family:'DM Mono',monospace;margin-bottom:16px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:0}
+.pricing-card{background:var(--black-3);border:1px solid var(--border);padding:32px;position:relative}
 .pricing-card.featured{border-color:var(--red);background:var(--black-4)}
-.pricing-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;right:28px;padding:4px 14px;background:var(--red);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fff}
-.pricing-icon{font-size:30px;margin-bottom:18px;display:block}
-.pricing-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;margin-bottom:6px}
-.pricing-price{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;color:var(--cream);margin-bottom:4px}
+.pricing-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;left:50%;transform:translateX(-50%);padding:4px 14px;background:var(--red);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#fff;white-space:nowrap}
+.pricing-card.best-value::after{content:'BEST VALUE';position:absolute;top:-1px;right:0;padding:4px 14px;background:#f59e0b;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;color:#000}
+.pricing-icon{font-size:26px;margin-bottom:14px;display:block}
+.pricing-plan-days{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cream-dim);text-transform:uppercase;margin-bottom:4px}
+.pricing-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:10px}
+.pricing-price{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;color:var(--cream);line-height:1;margin-bottom:2px}
 .pricing-price span{font-size:18px;color:var(--cream-dim)}
+.pricing-price-meta{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.pricing-per-day{font-size:11px;color:var(--cream-dim);font-family:'DM Mono',monospace;letter-spacing:.5px}
+.pricing-save{font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.25);letter-spacing:1px}
 .pricing-price-sub{font-size:11px;color:var(--cream-dim);letter-spacing:1px;margin-bottom:24px}
 .pricing-features-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
 .pf-item{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5}
 .pf-check{color:var(--green);flex-shrink:0;font-size:13px;margin-top:1px}
 .pf-cross{color:#444;flex-shrink:0;font-size:13px;margin-top:1px}
-.pricing-btn{width:100%;padding:13px;background:none;border:1px solid var(--border);color:var(--cream);font-family:'Sarabun',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;display:block;text-align:center}
-.pricing-btn:hover{border-color:var(--cream-dim)}
-.pricing-card.featured .pricing-btn{background:var(--red);border-color:var(--red);color:#fff}
-.pricing-card.featured .pricing-btn:hover{background:var(--red-dim)}
+.pricing-btn{width:100%;padding:13px;background:none;border:1px solid var(--border);color:var(--cream-dim);font-family:'Sarabun',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:default;transition:all .2s;text-decoration:none;display:block;text-align:center;opacity:.6}
+.pricing-btn:hover{border-color:var(--border)}
+.pricing-card.featured .pricing-btn{background:none;border-color:var(--border-red);color:var(--cream-dim)}
+.pricing-card.featured .pricing-btn:hover{background:none}
 .compare-table{width:100%;border-collapse:collapse;margin-top:40px;background:var(--black-3);border:1px solid var(--border)}
 .compare-table th{padding:14px 22px;text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--cream-dim);border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-weight:400;background:var(--black-4)}
 .compare-table th:not(:first-child){text-align:center}
@@ -313,7 +318,9 @@ body.lang-th button[data-lang="th"]{display:inline-block}
   nav{padding:0 18px}.nav-links{display:none}
   section{padding:60px 20px}#hero{padding:100px 20px 70px}
   .steps-layout,.faq-layout,.footer-top,.products-grid,.pricing-grid,.perf-stat-row{grid-template-columns:1fr}
-  .hero-stats{gap:20px}.hero-title{font-size:52px}
+  .pricing-ib-banner{flex-direction:column;align-items:flex-start}
+  .pricing-ib-features{flex-direction:column;gap:8px}
+  .hero-title{font-size:52px}
   #lineFloat{bottom:16px;right:16px}
   #cookieBanner{padding:14px 18px}
 }
@@ -403,69 +410,28 @@ body.lang-th button[data-lang="th"]{display:inline-block}
   <div class="hero-accent"></div>
   <div class="hero-content">
     <div class="hero-badge">
-      <span data-lang="en">Algorithmic Trading EA · MH Markets</span>
-      <span data-lang="th">ระบบเทรดอัตโนมัติ EA · MH Markets</span>
+      <span data-lang="en">Algorithmic Trading EA · Live on Myfxbook</span>
+      <span data-lang="th">ระบบเทรดอัตโนมัติ EA · ยืนยันบน Myfxbook</span>
     </div>
     <div class="hero-title">
       <div data-lang="en">TRADE<br/><span class="line-red">SMARTER.</span><br/>NOT HARDER.</div>
       <div data-lang="th">เทรด<br/><span class="line-red">อัจฉริยะ</span><br/>ไม่ใช่หนัก</div>
     </div>
     <p class="hero-sub" data-lang="en">
-      NomadAlgo delivers algorithmic Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — running live on MH Markets. Connect via IB and run free, or join Copy Trade with 20% profit share only.
+      NomadAlgo delivers algorithmic Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — verified live on Myfxbook. Connect via IB and run free, or get a Connect License starting from $60.
     </p>
     <p class="hero-sub" data-lang="th">
-      NomadAlgo นำเสนอ Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — รันสดบน MH Markets ต่อ IB รันฟรี หรือเลือก Copy Trade แบ่งกำไรเพียง 20%
+      NomadAlgo นำเสนอ Expert Advisors — <strong style="color:var(--cream)">XBO</strong> &amp; <strong style="color:var(--cream)">DGB</strong> — ยืนยันสดบน Myfxbook ต่อ IB รันฟรี หรือเช่า Connect License เริ่มต้นเพียง $60
     </p>
     <div class="hero-actions">
       <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
-         target="_blank" rel="noopener" class="btn-primary" data-lang="en">🔗 Open Account via IB — Free</a>
+         target="_blank" rel="noopener" class="btn-primary" data-lang="en">🔗 Open Account — Free via IB</a>
       <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
          target="_blank" rel="noopener" class="btn-primary" data-lang="th">🔗 เปิดบัญชีผ่าน IB — ฟรี</a>
-      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="btn-outline" data-lang="en">📈 Copy Trade Enquiry</a>
-      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="btn-outline" data-lang="th">📈 สอบถาม Copy Trade</a>
+      <a href="#pricing" class="btn-outline" data-lang="en">🔑 View Connect License</a>
+      <a href="#pricing" class="btn-outline" data-lang="th">🔑 ดู Connect License</a>
     </div>
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">XBO<span>+</span>DGB</div>
-        <div class="hero-stat-label" data-lang="en">Live EA Products</div>
-        <div class="hero-stat-label" data-lang="th">EA ที่รันสดอยู่</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">0<span>%</span></div>
-        <div class="hero-stat-label" data-lang="en">Upfront Cost (IB)</div>
-        <div class="hero-stat-label" data-lang="th">ค่าใช้จ่ายล่วงหน้า (IB)</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">20<span>%</span></div>
-        <div class="hero-stat-label" data-lang="en">Profit Share Only</div>
-        <div class="hero-stat-label" data-lang="th">แบ่งเฉพาะกำไร</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">MH<span>·</span></div>
-        <div class="hero-stat-label">MH Markets</div>
-      </div>
-    </div>
-  </div>
-  <div class="hero-ticker">
-    <div class="ticker-track">
-      <span class="ticker-item">EURUSD <span class="up">LIVE ●</span></span>
-      <span class="ticker-item">XAUUSD <span class="up">LIVE ●</span></span>
-      <span class="ticker-item">XBO EA <span class="up">RUNNING ●</span></span>
-      <span class="ticker-item">DGB EA <span class="up">RUNNING ●</span></span>
-      <span class="ticker-item">MH Markets <span class="up">✓ REGULATED</span></span>
-      <span class="ticker-item">MYFXBOOK <span class="up">✓ VERIFIED</span></span>
-      <span class="ticker-item">COPY TRADE <span class="up">OPEN</span></span>
-      <span class="ticker-item">IB CONNECT <span class="up">FREE</span></span>
-      <span class="ticker-item">EURUSD <span class="up">LIVE ●</span></span>
-      <span class="ticker-item">XAUUSD <span class="up">LIVE ●</span></span>
-      <span class="ticker-item">XBO EA <span class="up">RUNNING ●</span></span>
-      <span class="ticker-item">DGB EA <span class="up">RUNNING ●</span></span>
-      <span class="ticker-item">MH Markets <span class="up">✓ REGULATED</span></span>
-      <span class="ticker-item">MYFXBOOK <span class="up">✓ VERIFIED</span></span>
-      <span class="ticker-item">COPY TRADE <span class="up">OPEN</span></span>
-      <span class="ticker-item">IB CONNECT <span class="up">FREE</span></span>
-    </div>
-  </div>
+  <div class="hero-ticker" style="display:none"></div>
 </section>
 
 <!-- ══ PERFORMANCE ═════════════════════════════════════════ -->
@@ -519,10 +485,10 @@ body.lang-th button[data-lang="th"]{display:inline-block}
       <div class="step-item active" onclick="setStep(this,0)">
         <div class="step-num">01</div>
         <div>
-          <div class="step-title" data-lang="en">Choose Your Offer</div>
-          <div class="step-title" data-lang="th">เลือก Offer ของคุณ</div>
-          <div class="step-desc" data-lang="en">IB = run EA free, keep all profits. Copy Trade = hands-free, 20% profit share only.</div>
-          <div class="step-desc" data-lang="th">IB = รัน EA ฟรี เก็บกำไรทั้งหมด | Copy Trade = ไม่ต้องดูแล แบ่งกำไร 20%</div>
+          <div class="step-title" data-lang="en">Choose Your Plan</div>
+          <div class="step-title" data-lang="th">เลือกแพ็กเกจของคุณ</div>
+          <div class="step-desc" data-lang="en">IB = run EA free, keep all profits. Connect License = pay once, run EA for 30/90/365 days.</div>
+          <div class="step-desc" data-lang="th">IB = รัน EA ฟรี เก็บกำไรทั้งหมด | Connect License = จ่ายครั้งเดียว รัน 30/90/365 วัน</div>
         </div>
       </div>
       <div class="step-item" onclick="setStep(this,1)">
@@ -539,18 +505,18 @@ body.lang-th button[data-lang="th"]{display:inline-block}
         <div>
           <div class="step-title" data-lang="en">Install EA &amp; Go Live</div>
           <div class="step-title" data-lang="th">ติดตั้ง EA แล้วเริ่มได้เลย</div>
-          <div class="step-desc" data-lang="en">We send EA files + setup guide via LINE. Install on MT4/MT5 and go live same day. We support you every step.</div>
-          <div class="step-desc" data-lang="th">เราส่งไฟล์ EA และคู่มือผ่าน LINE ติดตั้งบน MT4/MT5 เริ่มได้วันเดียวกัน มีทีมช่วยตลอด</div>
+          <div class="step-desc" data-lang="en">We send EA files + setup guide via LINE. Install on MT5 and go live same day. We support you every step.</div>
+          <div class="step-desc" data-lang="th">เราส่งไฟล์ EA และคู่มือผ่าน LINE ติดตั้งบน MT5 เริ่มได้วันเดียวกัน มีทีมช่วยตลอด</div>
         </div>
       </div>
     </div>
     <div class="step-visual reveal" id="stepVisual">
       <div class="step-visual-inner">
         <span class="step-icon-big" id="stepIcon">🎯</span>
-        <div class="step-visual-title" data-lang="en" id="stepTitle">CHOOSE YOUR PATH</div>
-        <div class="step-visual-title" data-lang="th" id="stepTitleTh">เลือก OFFER ของคุณ</div>
-        <p class="step-visual-desc" data-lang="en" id="stepDesc">Two clear paths — IB (free, keep all profits) or Copy Trade (hands-free, 20% share). No hidden fees.</p>
-        <p class="step-visual-desc" data-lang="th" id="stepDescTh">สองทางเลือกที่ชัดเจน — IB (ฟรี เก็บกำไรทั้งหมด) หรือ Copy Trade (ไม่ต้องดูแล 20% share)</p>
+        <div class="step-visual-title" data-lang="en" id="stepTitle">CHOOSE YOUR PLAN</div>
+        <div class="step-visual-title" data-lang="th" id="stepTitleTh">เลือกแพ็กเกจของคุณ</div>
+        <p class="step-visual-desc" data-lang="en" id="stepDesc">IB = free, keep 100% profits. Connect License = pay once, run for 30/90/365 days. No hidden fees.</p>
+        <p class="step-visual-desc" data-lang="th" id="stepDescTh">IB = ฟรี เก็บกำไรทั้งหมด | Connect License = จ่ายครั้งเดียว รัน 30/90/365 วัน ไม่มีค่าแอบซ่อน</p>
       </div>
     </div>
   </div>
@@ -566,8 +532,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
     <div class="product-card reveal">
       <div class="product-tag">EA · LIVE ON MYFXBOOK</div>
       <div class="product-name">XBO</div>
-      <div class="product-tagline" data-lang="en">Live verified portfolio on Myfxbook. Momentum-driven EA running on MH Markets.</div>
-      <div class="product-tagline" data-lang="th">พอร์ตยืนยันสดบน Myfxbook รัน EA แบบ Momentum บน MH Markets</div>
+      <div class="product-tagline" data-lang="en">Live verified portfolio on Myfxbook. Momentum-driven EA — available via IB or Connect License.</div>
+      <div class="product-tagline" data-lang="th">พอร์ตยืนยันสดบน Myfxbook รัน EA แบบ Momentum — ใช้ได้ผ่าน IB หรือ Connect License</div>
       <div class="product-stats-row">
         <div>
           <div class="product-stat-val green">LIVE</div>
@@ -575,13 +541,14 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <div class="product-stat-lbl" data-lang="th">สถานะ</div>
         </div>
         <div>
-          <div class="product-stat-val">MT4/5</div>
+          <div class="product-stat-val">MT5</div>
           <div class="product-stat-lbl" data-lang="en">Platform</div>
           <div class="product-stat-lbl" data-lang="th">แพลตฟอร์ม</div>
         </div>
         <div>
-          <div class="product-stat-val">MH</div>
-          <div class="product-stat-lbl">Broker</div>
+          <div class="product-stat-val">MYFXBOOK</div>
+          <div class="product-stat-lbl" data-lang="en">Verified</div>
+          <div class="product-stat-lbl" data-lang="th">ยืนยันแล้ว</div>
         </div>
       </div>
       <div class="product-features">
@@ -589,8 +556,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
         <div class="product-feature" data-lang="th">บัญชียืนยันสดบน Myfxbook</div>
         <div class="product-feature" data-lang="en">Runs free via IB referral</div>
         <div class="product-feature" data-lang="th">รันฟรีเมื่อสมัครผ่าน IB</div>
-        <div class="product-feature" data-lang="en">Available for Copy Trade</div>
-        <div class="product-feature" data-lang="th">รองรับ Copy Trade</div>
+        <div class="product-feature" data-lang="en">Connect License available (30/90/365 days)</div>
+        <div class="product-feature" data-lang="th">เช่า Connect License ได้ (30/90/365 วัน)</div>
         <div class="product-feature" data-lang="en">Full support via LINE OA</div>
         <div class="product-feature" data-lang="th">ซัพพอร์ตผ่าน LINE OA</div>
       </div>
@@ -606,8 +573,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
     <div class="product-card reveal" style="transition-delay:.1s">
       <div class="product-tag">EA · LIVE ON MYFXBOOK</div>
       <div class="product-name">DGB</div>
-      <div class="product-tagline" data-lang="en">RSIGB strategy — live verified portfolio on Myfxbook. Consistent signal EA on MH Markets.</div>
-      <div class="product-tagline" data-lang="th">กลยุทธ์ RSIGB — พอร์ตยืนยันสดบน Myfxbook รันสัญญาณสม่ำเสมอบน MH Markets</div>
+      <div class="product-tagline" data-lang="en">RSIGB strategy — live verified portfolio on Myfxbook. Consistent signal EA — available via IB or Connect License.</div>
+      <div class="product-tagline" data-lang="th">กลยุทธ์ RSIGB — พอร์ตยืนยันสดบน Myfxbook — ใช้ได้ผ่าน IB หรือ Connect License</div>
       <div class="product-stats-row">
         <div>
           <div class="product-stat-val green">LIVE</div>
@@ -615,13 +582,14 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <div class="product-stat-lbl" data-lang="th">สถานะ</div>
         </div>
         <div>
-          <div class="product-stat-val">MT4/5</div>
+          <div class="product-stat-val">MT5</div>
           <div class="product-stat-lbl" data-lang="en">Platform</div>
           <div class="product-stat-lbl" data-lang="th">แพลตฟอร์ม</div>
         </div>
         <div>
-          <div class="product-stat-val">MH</div>
-          <div class="product-stat-lbl">Broker</div>
+          <div class="product-stat-val">MYFXBOOK</div>
+          <div class="product-stat-lbl" data-lang="en">Verified</div>
+          <div class="product-stat-lbl" data-lang="th">ยืนยันแล้ว</div>
         </div>
       </div>
       <div class="product-features">
@@ -629,8 +597,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
         <div class="product-feature" data-lang="th">พอร์ต RSIGB ยืนยันสดบน Myfxbook</div>
         <div class="product-feature" data-lang="en">Runs free via IB referral</div>
         <div class="product-feature" data-lang="th">รันฟรีเมื่อสมัครผ่าน IB</div>
-        <div class="product-feature" data-lang="en">Available for Copy Trade</div>
-        <div class="product-feature" data-lang="th">รองรับ Copy Trade</div>
+        <div class="product-feature" data-lang="en">Connect License available (30/90/365 days)</div>
+        <div class="product-feature" data-lang="th">เช่า Connect License ได้ (30/90/365 วัน)</div>
         <div class="product-feature" data-lang="en">Full support via LINE OA</div>
         <div class="product-feature" data-lang="th">ซัพพอร์ตผ่าน LINE OA</div>
       </div>
@@ -648,65 +616,123 @@ body.lang-th button[data-lang="th"]{display:inline-block}
 
 <!-- ══ PRICING ═════════════════════════════════════════════ -->
 <section id="pricing">
-  <div class="section-label reveal" data-lang="en">Pricing &amp; Offers</div>
-  <div class="section-label reveal" data-lang="th">ราคาและ Offer</div>
-  <div class="section-title reveal" data-lang="en">TWO WAYS<br/>TO JOIN.</div>
-  <div class="section-title reveal" data-lang="th">สองวิธี<br/>ในการเข้าร่วม</div>
+  <div class="section-label reveal" data-lang="en">Pricing &amp; Plans</div>
+  <div class="section-label reveal" data-lang="th">ราคาและแพ็กเกจ</div>
+  <div class="section-title reveal" data-lang="en">SIMPLE PRICING.<br/>NO SURPRISES.</div>
+  <div class="section-title reveal" data-lang="th">ราคาโปร่งใส<br/>ไม่มีค่าใช้จ่ายซ่อน</div>
   <div class="divider reveal"></div>
-  <div class="pricing-grid">
-    <div class="pricing-card reveal">
-      <span class="pricing-icon">🔗</span>
-      <div class="pricing-name" data-lang="en">IB Connect</div>
-      <div class="pricing-name" data-lang="th">ต่อ IB</div>
-      <div class="pricing-price"><span data-lang="en">FREE</span><span data-lang="th">ฟรี</span></div>
-      <div class="pricing-price-sub" data-lang="en">Zero cost · Zero profit share · Keep 100%</div>
-      <div class="pricing-price-sub" data-lang="th">ไม่มีค่าใช้จ่าย · ไม่แบ่งกำไร · เก็บ 100%</div>
-      <div class="pricing-features-list">
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Full EA access (XBO or DGB)</span><span data-lang="th">เข้าถึง EA เต็มรูปแบบ</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Open broker account at MH Markets via IB link</span><span data-lang="th">เปิดบัญชีโบรกเกอร์ MH Markets ผ่านลิงก์ IB</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">EA files + MT4/MT5 setup guide via LINE</span><span data-lang="th">ไฟล์ EA + คู่มือตั้งค่าส่งผ่าน LINE</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Ongoing LINE OA support</span><span data-lang="th">ซัพพอร์ตผ่าน LINE OA ตลอด</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Parameter updates &amp; alerts</span><span data-lang="th">อัปเดตพารามิเตอร์และการแจ้งเตือน</span></div>
-        <div class="pf-item" style="opacity:.35"><span class="pf-cross">—</span><span data-lang="en">You manage your own VPS/server</span><span data-lang="th">ต้องดูแล VPS ของตัวเอง</span></div>
+
+  <!-- IB Connect Free Banner -->
+  <div class="pricing-ib-banner reveal">
+    <div class="pricing-ib-left">
+      <span class="pricing-ib-icon">🔗</span>
+      <div>
+        <div class="pricing-ib-title" data-lang="en">IB Connect — Run EA for Free</div>
+        <div class="pricing-ib-title" data-lang="th">IB Connect — รัน EA ฟรี</div>
+        <div class="pricing-ib-sub" data-lang="en">Open a broker account via our IB link · Zero cost · Keep 100% of profits</div>
+        <div class="pricing-ib-sub" data-lang="th">เปิดบัญชีโบรกเกอร์ผ่านลิงก์ IB · ไม่มีค่าใช้จ่าย · เก็บกำไร 100%</div>
       </div>
-      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
-         target="_blank" rel="noopener" class="pricing-btn" data-lang="en">Open MH Markets Account →</a>
-      <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
-         target="_blank" rel="noopener" class="pricing-btn" data-lang="th">เปิดบัญชี MH Markets →</a>
     </div>
-    <div class="pricing-card featured reveal" style="transition-delay:.1s">
-      <span class="pricing-icon">📈</span>
-      <div class="pricing-name" data-lang="en">Copy Trade</div>
-      <div class="pricing-name" data-lang="th">Copy Trade</div>
-      <div class="pricing-price">20<span>%</span></div>
-      <div class="pricing-price-sub" data-lang="en">Profit share only · No monthly fee · Pay on profit</div>
-      <div class="pricing-price-sub" data-lang="th">แบ่งกำไรเท่านั้น · ไม่มีค่ารายเดือน · จ่ายเมื่อกำไร</div>
-      <div class="pricing-features-list">
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Fully automated — no MT4/VPS needed</span><span data-lang="th">อัตโนมัติสมบูรณ์ ไม่ต้องมี MT4/VPS</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Trades copied from master account in real-time</span><span data-lang="th">คัดลอกออเดอร์จากบัญชีหลักแบบเรียลไทม์</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Both XBO + DGB signals available</span><span data-lang="th">รับสัญญาณทั้ง XBO และ DGB</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Monthly performance report via LINE</span><span data-lang="th">รายงานผลประจำเดือนผ่าน LINE</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">High watermark — pay only on new profit highs</span><span data-lang="th">High Watermark — จ่ายเมื่อทำ All-Time High กำไรใหม่</span></div>
-        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Dedicated support via LINE OA</span><span data-lang="th">ซัพพอร์ตเฉพาะผ่าน LINE OA</span></div>
+    <div class="pricing-ib-features">
+      <div class="pricing-ib-feat" data-lang="en">Full EA access (XBO or DGB)</div>
+      <div class="pricing-ib-feat" data-lang="th">เข้าถึง EA เต็มรูปแบบ</div>
+      <div class="pricing-ib-feat" data-lang="en">EA files + setup guide via LINE</div>
+      <div class="pricing-ib-feat" data-lang="th">ไฟล์ EA + คู่มือผ่าน LINE</div>
+      <div class="pricing-ib-feat" data-lang="en">Ongoing support &amp; updates</div>
+      <div class="pricing-ib-feat" data-lang="th">ซัพพอร์ตและอัปเดตตลอด</div>
+    </div>
+    <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+       target="_blank" rel="noopener" class="btn-primary" data-lang="en">Open Account →</a>
+    <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109"
+       target="_blank" rel="noopener" class="btn-primary" data-lang="th">เปิดบัญชี →</a>
+  </div>
+
+  <!-- Connect License -->
+  <div class="pricing-license-label" data-lang="en">— OR — Connect License · Choose your plan</div>
+  <div class="pricing-license-label" data-lang="th">— หรือ — Connect License · เลือกแพ็กเกจของคุณ</div>
+
+  <div class="pricing-grid">
+    <!-- Basic 30d -->
+    <div class="pricing-card reveal">
+      <span class="pricing-icon">⏱</span>
+      <div class="pricing-plan-days" data-lang="en">30 days</div>
+      <div class="pricing-plan-days" data-lang="th">30 วัน</div>
+      <div class="pricing-name">Basic</div>
+      <div class="pricing-price">$60</div>
+      <div class="pricing-price-meta">
+        <span class="pricing-per-day">$2.00 / day</span>
       </div>
-      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="pricing-btn" data-lang="en">LINE: @nomadalgo to Start →</a>
-      <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" class="pricing-btn" data-lang="th">LINE: @nomadalgo เพื่อเริ่มต้น →</a>
+      <div class="pricing-features-list">
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">XBO or DGB EA (your choice)</span><span data-lang="th">XBO หรือ DGB EA (เลือกได้)</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">EA files + setup guide via LINE</span><span data-lang="th">ไฟล์ EA + คู่มือผ่าน LINE</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">30-day active license key</span><span data-lang="th">License 30 วัน</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">LINE OA support</span><span data-lang="th">ซัพพอร์ตผ่าน LINE OA</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Parameter updates included</span><span data-lang="th">รวมอัปเดตพารามิเตอร์</span></div>
+      </div>
+      <div class="pricing-btn" data-lang="en">🔒 Payment — Coming Soon</div>
+      <div class="pricing-btn" data-lang="th">🔒 ชำระเงิน — เร็วๆ นี้</div>
+    </div>
+
+    <!-- Pro 90d -->
+    <div class="pricing-card featured reveal" style="transition-delay:.1s">
+      <span class="pricing-icon">⚡</span>
+      <div class="pricing-plan-days" data-lang="en">90 days</div>
+      <div class="pricing-plan-days" data-lang="th">90 วัน</div>
+      <div class="pricing-name">Pro</div>
+      <div class="pricing-price">$149</div>
+      <div class="pricing-price-meta">
+        <span class="pricing-per-day">$1.66 / day</span>
+        <span class="pricing-save">SAVE 17%</span>
+      </div>
+      <div class="pricing-features-list">
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">XBO or DGB EA (your choice)</span><span data-lang="th">XBO หรือ DGB EA (เลือกได้)</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">EA files + setup guide via LINE</span><span data-lang="th">ไฟล์ EA + คู่มือผ่าน LINE</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">90-day active license key</span><span data-lang="th">License 90 วัน</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">LINE OA support</span><span data-lang="th">ซัพพอร์ตผ่าน LINE OA</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Parameter updates included</span><span data-lang="th">รวมอัปเดตพารามิเตอร์</span></div>
+      </div>
+      <div class="pricing-btn" data-lang="en">🔒 Payment — Coming Soon</div>
+      <div class="pricing-btn" data-lang="th">🔒 ชำระเงิน — เร็วๆ นี้</div>
+    </div>
+
+    <!-- Annual 365d -->
+    <div class="pricing-card best-value reveal" style="transition-delay:.2s">
+      <span class="pricing-icon">👑</span>
+      <div class="pricing-plan-days" data-lang="en">365 days</div>
+      <div class="pricing-plan-days" data-lang="th">365 วัน</div>
+      <div class="pricing-name">Annual</div>
+      <div class="pricing-price">$549</div>
+      <div class="pricing-price-meta">
+        <span class="pricing-per-day">$1.50 / day</span>
+        <span class="pricing-save">SAVE 25%</span>
+      </div>
+      <div class="pricing-features-list">
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">XBO or DGB EA (your choice)</span><span data-lang="th">XBO หรือ DGB EA (เลือกได้)</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">EA files + setup guide via LINE</span><span data-lang="th">ไฟล์ EA + คู่มือผ่าน LINE</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">365-day active license key</span><span data-lang="th">License 365 วัน</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">Priority LINE OA support</span><span data-lang="th">Priority ซัพพอร์ตผ่าน LINE OA</span></div>
+        <div class="pf-item"><span class="pf-check">✓</span><span data-lang="en">All parameter updates for 1 year</span><span data-lang="th">อัปเดตพารามิเตอร์ตลอด 1 ปี</span></div>
+      </div>
+      <div class="pricing-btn" data-lang="en">🔒 Payment — Coming Soon</div>
+      <div class="pricing-btn" data-lang="th">🔒 ชำระเงิน — เร็วๆ นี้</div>
     </div>
   </div>
+
+  <!-- Compare Table -->
   <table class="compare-table reveal">
     <thead>
       <tr>
-        <th data-lang="en">Feature</th><th data-lang="th">ฟีเจอร์</th>
-        <th>IB Connect</th><th>Copy Trade</th>
+        <th data-lang="en">Feature</th><th data-lang="th">รายละเอียด</th>
+        <th>IB Connect</th><th>Basic 30d</th><th>Pro 90d</th><th>Annual 365d</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td data-lang="en">Cost to Start</td><td data-lang="th">ค่าเริ่มต้น</td><td><span class="ck-yes">✓</span> Free</td><td><span class="ck-yes">✓</span> Free</td></tr>
-      <tr><td data-lang="en">EA Access</td><td data-lang="th">เข้าถึง EA</td><td><span class="ck-info">1 EA</span></td><td><span class="ck-yes">✓</span> Both</td></tr>
-      <tr><td data-lang="en">Profit Share</td><td data-lang="th">ส่วนแบ่งกำไร</td><td><span class="ck-no">—</span> None</td><td><span class="ck-info">20%</span></td></tr>
-      <tr><td data-lang="en">Need Own VPS</td><td data-lang="th">ต้องมี VPS เอง</td><td><span class="ck-info">Required</span></td><td><span class="ck-no">—</span> No</td></tr>
-      <tr><td data-lang="en">Hands-Free</td><td data-lang="th">ไม่ต้องดูแล</td><td><span class="ck-no">—</span></td><td><span class="ck-yes">✓</span></td></tr>
-      <tr><td>Broker</td><td>Broker</td><td colspan="2" style="text-align:center">MH Markets</td></tr>
+      <tr><td data-lang="en">Price</td><td data-lang="th">ราคา</td><td><span class="ck-yes">FREE</span></td><td><span class="ck-info">$60</span></td><td><span class="ck-info">$149</span></td><td><span class="ck-info">$549</span></td></tr>
+      <tr><td data-lang="en">Per Day</td><td data-lang="th">ต่อวัน</td><td>—</td><td>$2.00</td><td>$1.66</td><td>$1.50</td></tr>
+      <tr><td data-lang="en">EA Choice</td><td data-lang="th">เลือก EA</td><td><span class="ck-yes">✓</span> All</td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td></tr>
+      <tr><td data-lang="en">Need Own Broker</td><td data-lang="th">ต้องมีโบรกเกอร์</td><td><span class="ck-yes">✓</span> IB Link</td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td></tr>
+      <tr><td data-lang="en">LINE Support</td><td data-lang="th">ซัพพอร์ต LINE</td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td><td><span class="ck-yes">✓</span></td><td><span class="ck-info">Priority</span></td></tr>
+      <tr><td data-lang="en">Savings vs Basic</td><td data-lang="th">ประหยัดเทียบ Basic</td><td>—</td><td>—</td><td><span class="ck-info">Save 17%</span></td><td><span class="ck-info">Save 25%</span></td></tr>
     </tbody>
   </table>
 </section>
@@ -751,8 +777,10 @@ body.lang-th button[data-lang="th"]{display:inline-block}
              target="_blank" rel="noopener" class="contact-link">
             <span class="contact-link-icon">🔗</span>
             <div>
-              <div style="font-size:12px;color:var(--cream);font-weight:500">MH Markets — สมัคร IB</div>
-              <div style="font-size:11px;color:var(--cream-dim)">my.mhmarkets.com (รหัส IB ของ NomadAlgo)</div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500" data-lang="en">Open Broker Account (IB — Free)</div>
+              <div style="font-size:12px;color:var(--cream);font-weight:500" data-lang="th">เปิดบัญชีโบรกเกอร์ (IB — ฟรี)</div>
+              <div style="font-size:11px;color:var(--cream-dim)" data-lang="en">Tap to register via our IB link</div>
+              <div style="font-size:11px;color:var(--cream-dim)" data-lang="th">สมัครผ่านลิงก์ IB ของเรา</div>
             </div>
           </a>
         </div>
@@ -765,8 +793,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <span class="faq-q-text" data-lang="th">ฝากขั้นต่ำเท่าไหร่?</span>
           <div class="faq-icon">+</div>
         </div>
-        <div class="faq-a" data-lang="en">For IB: open an MH Markets account via our link and deposit their minimum (typically $100–$200). We recommend $300+ for proper lot sizing. For Copy Trade: contact us via LINE @nomadalgo for current minimum requirements.</div>
-        <div class="faq-a" data-lang="th">IB: เปิดบัญชี MH Markets ผ่านลิงก์ของเรา ฝากตามขั้นต่ำของโบรก (ประมาณ $100–200) แนะนำ $300+ เพื่อ Lot Sizing ที่เหมาะสม Copy Trade: สอบถาม LINE @nomadalgo</div>
+        <div class="faq-a" data-lang="en">For IB: open a broker account via our link and deposit the minimum (typically $100–$200). We recommend $300+ for proper lot sizing. For Connect License: any amount works — the EA adapts to your account size.</div>
+        <div class="faq-a" data-lang="th">IB: เปิดบัญชีโบรกเกอร์ผ่านลิงก์ของเรา ฝากตามขั้นต่ำ (ประมาณ $100–200) แนะนำ $300+ เพื่อ Lot Sizing ที่เหมาะสม Connect License: ฝากเท่าไหร่ก็ได้ EA ปรับตามขนาดบัญชี</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -774,8 +802,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <span class="faq-q-text" data-lang="th">โมเดล IB ฟรีทำงานอย่างไร?</span>
           <div class="faq-icon">+</div>
         </div>
-        <div class="faq-a" data-lang="en">You register at MH Markets through our IB referral link. MH Markets pays us a commission (spread rebate) on each trade you make. This covers our cost — you pay nothing and keep 100% of your profits.</div>
-        <div class="faq-a" data-lang="th">คุณสมัคร MH Markets ผ่านลิงก์ IB ของเรา โบรกเกอร์จ่าย Commission ให้เราต่อทุกเทรด ซึ่งครอบคลุมต้นทุนของเรา คุณไม่ต้องจ่ายอะไรและเก็บกำไร 100%</div>
+        <div class="faq-a" data-lang="en">You register at a broker through our IB referral link. The broker pays us a commission (spread rebate) on each trade you make. This covers our cost — you pay nothing and keep 100% of your profits.</div>
+        <div class="faq-a" data-lang="th">คุณสมัครโบรกเกอร์ผ่านลิงก์ IB ของเรา โบรกเกอร์จ่าย Commission ให้เราต่อทุกเทรด ซึ่งครอบคลุมต้นทุนของเรา คุณไม่ต้องจ่ายอะไรและเก็บกำไร 100%</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -783,17 +811,17 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <span class="faq-q-text" data-lang="th">ทำไมต้อง MH Markets?</span>
           <div class="faq-icon">+</div>
         </div>
-        <div class="faq-a" data-lang="en">Our EAs are optimized and tested on MH Markets' MT4/MT5 platform. Using the same broker ensures the EA behaves exactly as backtested and live-tested. MH Markets is a regulated broker with tight spreads and reliable execution.</div>
-        <div class="faq-a" data-lang="th">EA ของเราถูก Optimize และทดสอบบนแพลตฟอร์ม MT4/MT5 ของ MH Markets การใช้โบรกเกอร์เดียวกันทำให้ EA ทำงานตรงกับที่ทดสอบไว้ MH Markets มีใบอนุญาต สเปรดแน่น และ Execution เชื่อถือได้</div>
+        <div class="faq-a" data-lang="en">Our EAs are optimized and tested on MH Markets' MT5 platform. Using the same broker ensures the EA behaves exactly as backtested and live-tested. MH Markets is a regulated broker with tight spreads and reliable execution.</div>
+        <div class="faq-a" data-lang="th">EA ของเราถูก Optimize และทดสอบบนแพลตฟอร์ม MT5 ของ MH Markets การใช้โบรกเกอร์เดียวกันทำให้ EA ทำงานตรงกับที่ทดสอบไว้ MH Markets มีใบอนุญาต สเปรดแน่น และ Execution เชื่อถือได้</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
-          <span class="faq-q-text" data-lang="en">How is the 20% profit share calculated?</span>
-          <span class="faq-q-text" data-lang="th">คิด Profit Share 20% อย่างไร?</span>
+          <span class="faq-q-text" data-lang="en">How does Connect License work?</span>
+          <span class="faq-q-text" data-lang="th">Connect License ทำงานอย่างไร?</span>
           <div class="faq-icon">+</div>
         </div>
-        <div class="faq-a" data-lang="en">Profit share is calculated monthly on net new profits only (high watermark model). Example: account makes $1,000 profit → we take $200. If no profit that month → zero fee. If the account is at a loss from a previous month, we only charge once it surpasses the previous high.</div>
-        <div class="faq-a" data-lang="th">คิดรายเดือนจากกำไรสุทธิใหม่เท่านั้น (High Watermark) เช่น กำไร $1,000 → เราได้ $200 หากเดือนนั้นไม่มีกำไร → ไม่มีค่าใช้จ่าย หากยังขาดทุนจากเดือนก่อน → คิดเมื่อผ่านระดับสูงสุดเดิม</div>
+        <div class="faq-a" data-lang="en">After purchase, we send you an EA license key via LINE within 24 hours. You install the EA on your MT5, enter the key, and the EA activates for your chosen period (30/90/365 days). No recurring fees — pay once, run for the full duration.</div>
+        <div class="faq-a" data-lang="th">หลังจากชำระเงิน เราจะส่ง License Key ให้ผ่าน LINE ภายใน 24 ชั่วโมง คุณติดตั้ง EA บน MT5 ใส่ Key แล้ว EA จะ Activate ตามระยะที่เลือก (30/90/365 วัน) ไม่มีค่าใช้จ่ายรายเดือน จ่ายครั้งเดียวใช้ตลอดระยะเวลา</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
@@ -810,8 +838,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
           <span class="faq-q-text" data-lang="th">ต้องมีประสบการณ์เทรดไหม?</span>
           <div class="faq-icon">+</div>
         </div>
-        <div class="faq-a" data-lang="en">For Copy Trade — no experience needed. We handle everything and send monthly reports via LINE. For IB/EA — basic MT4/MT5 knowledge is helpful but not required. We send a full setup guide and provide support through every step via LINE @nomadalgo.</div>
-        <div class="faq-a" data-lang="th">Copy Trade ไม่ต้องมีประสบการณ์ เราจัดการทุกอย่างและส่งรายงานรายเดือนผ่าน LINE สำหรับ IB/EA ความรู้ MT4/MT5 พื้นฐานช่วยได้ แต่ไม่จำเป็น เรามีคู่มือและซัพพอร์ตตลอด</div>
+        <div class="faq-a" data-lang="en">No experience needed for Connect License — the EA runs automatically on your MT5. For IB setup, basic MT5 knowledge is helpful but not required. We send a full setup guide and support you through every step via LINE @nomadalgo.</div>
+        <div class="faq-a" data-lang="th">Connect License ไม่ต้องมีประสบการณ์ EA รันอัตโนมัติบน MT5 สำหรับ IB ความรู้ MT5 พื้นฐานช่วยได้ แต่ไม่จำเป็น เรามีคู่มือและซัพพอร์ตตลอดผ่าน LINE @nomadalgo</div>
       </div>
     </div>
   </div>
@@ -860,8 +888,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
   <div class="footer-top">
     <div>
       <div class="footer-brand-logo">NOMAD<span>ALGO</span></div>
-      <p class="footer-desc" data-lang="en">Algorithmic EA trading solutions built for independent traders. XBO &amp; DGB running live on MH Markets. Verified on Myfxbook.</p>
-      <p class="footer-desc" data-lang="th">ระบบ EA Trading สำหรับนักเทรดอิสระ XBO &amp; DGB รันสดบน MH Markets ยืนยันผ่าน Myfxbook</p>
+      <p class="footer-desc" data-lang="en">Algorithmic EA trading solutions built for independent traders. XBO &amp; DGB — live and verified on Myfxbook.</p>
+      <p class="footer-desc" data-lang="th">ระบบ EA Trading สำหรับนักเทรดอิสระ XBO &amp; DGB รันสดและยืนยันผ่าน Myfxbook</p>
     </div>
     <div>
       <div class="footer-col-title" data-lang="en">Products</div>
@@ -871,8 +899,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
         <a href="https://www.myfxbook.com/portfolio/rsigb/11925514" target="_blank" rel="noopener">DGB EA (Myfxbook)</a>
         <a href="#pricing" data-lang="en">IB Connect — Free</a>
         <a href="#pricing" data-lang="th">IB Connect — ฟรี</a>
-        <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" data-lang="en">Copy Trade</a>
-        <a href="https://line.me/R/ti/p/@nomadalgo" target="_blank" rel="noopener" data-lang="th">Copy Trade</a>
+        <a href="#pricing" data-lang="en">Connect License</a>
+        <a href="#pricing" data-lang="th">Connect License</a>
       </div>
     </div>
     <div>
@@ -883,8 +911,8 @@ body.lang-th button[data-lang="th"]{display:inline-block}
         <a href="#disclaimer" data-lang="th">คำเตือนความเสี่ยง</a>
         <a href="#disclaimer" data-lang="en">Privacy Policy (PDPA)</a>
         <a href="#disclaimer" data-lang="th">นโยบายข้อมูล (PDPA)</a>
-        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="en">Open MH Markets Account</a>
-        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="th">เปิดบัญชี MH Markets</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="en">Open Broker Account (IB)</a>
+        <a href="https://my.mhmarkets.com/register?code=3r%2AeAhH8&pid=2WVZ&linkType=1&mt=51&ts=1769176920&r=pe2s9lH&sign=5eefc42135af9cbcd8668d35531b6109" target="_blank" rel="noopener" data-lang="th">เปิดบัญชีโบรกเกอร์ (IB)</a>
       </div>
     </div>
   </div>
@@ -947,15 +975,15 @@ function switchEA(btn, ea) {
 
 // ── Steps ─────────────────────────────────────────────
 const stepData = [
-  { icon:'🎯', titleEn:'CHOOSE YOUR PATH', titleTh:'เลือก OFFER',
-    descEn:'IB = free + keep 100% profits. Copy Trade = hands-free + 20% share only.',
-    descTh:'IB = ฟรี เก็บกำไร 100% | Copy Trade = ไม่ต้องดูแล แบ่งกำไร 20%' },
-  { icon:'🏦', titleEn:'OPEN AT MH MARKETS', titleTh:'เปิดบัญชี MH MARKETS',
-    descEn:'Register via our IB link. Regulated broker, tight spreads, MT4/MT5 ready.',
-    descTh:'สมัครผ่านลิงก์ IB ของเรา โบรกเกอร์มีใบอนุญาต สเปรดแน่น รองรับ MT4/MT5' },
+  { icon:'🎯', titleEn:'CHOOSE YOUR PLAN', titleTh:'เลือกแพ็กเกจ',
+    descEn:'IB = free + keep 100% profits. Connect License = pay once, run 30/90/365 days.',
+    descTh:'IB = ฟรี เก็บกำไร 100% | Connect License = จ่ายครั้งเดียว รัน 30/90/365 วัน' },
+  { icon:'🏦', titleEn:'OPEN BROKER ACCOUNT', titleTh:'เปิดบัญชีโบรกเกอร์',
+    descEn:'Register via our IB link. Regulated broker, tight spreads, MT5 ready.',
+    descTh:'สมัครผ่านลิงก์ IB ของเรา โบรกเกอร์มีใบอนุญาต สเปรดแน่น รองรับ MT5' },
   { icon:'🚀', titleEn:'INSTALL &amp; GO LIVE', titleTh:'ติดตั้งและเริ่มได้เลย',
-    descEn:'We send EA + guide via LINE. Install on MT4/MT5 and go live same day.',
-    descTh:'ส่งไฟล์ EA + คู่มือผ่าน LINE ติดตั้งบน MT4/MT5 เริ่มได้วันเดียวกัน' }
+    descEn:'We send EA + guide via LINE. Install on MT5 and go live same day.',
+    descTh:'ส่งไฟล์ EA + คู่มือผ่าน LINE ติดตั้งบน MT5 เริ่มได้วันเดียวกัน' }
 ];
 function setStep(el, idx) {
   document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('active'));
